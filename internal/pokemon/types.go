@@ -11,6 +11,10 @@ type (
 		Types   []Types `json:"types"`
 	}
 
+	PokemonTypes struct {
+		Types []Type `json:"results"`
+	}
+
 	Stats struct {
 		BaseStat int  `json:"base_stat"`
 		Stat     Stat `json:"stat"`
@@ -21,10 +25,10 @@ type (
 	}
 
 	Types struct {
-		Nature Nature `json:"type"`
+		Type Type `json:"type"`
 	}
 
-	Nature struct {
+	Type struct {
 		Name string `json:"name"`
 	}
 
