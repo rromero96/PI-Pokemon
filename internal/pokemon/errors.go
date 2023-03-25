@@ -4,5 +4,6 @@ import "errors"
 
 var (
 	ErrUnmarshalResponse = errors.New("can't unmarshal response")
-	ErrNotFound          = errors.New("pokemons not found")
+	ErrPokemonNotFound   = errors.New("pokemon not found")
+	ErrTypesNotFound     = errors.New("types not found")
 )

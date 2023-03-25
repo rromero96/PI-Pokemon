@@ -14,7 +14,7 @@ type (
 	GetPokemon func(context.Context, int) (Pokemon, error)
 
 	// GetTypes retrieves the pokemon types
-	GetTypes func(context.Context) ([]Type, error)
+	GetTypes func(context.Context) (PokemonTypes, error)
 )
 
 const (
@@ -36,7 +36,7 @@ func MakeGetPokemon(restGetFunc rest.GetFunc) (GetPokemon, error) {
 			}
 			return pokemon, nil
 		case http.StatusNotFound:
-			return Pokemon{}, ErrNotFound
+			return Pokemon{}, ErrPokemonNotFound
 		default:
 			return Pokemon{}, rest.RequestError{
 				Method:          http.MethodGet,
@@ -50,20 +50,20 @@ func MakeGetPokemon(restGetFunc rest.GetFunc) (GetPokemon, error) {
 
 // MakeGetTypes creates a new GetTypes function
 func MakeGetTypes(restGetFunc rest.GetFunc) (GetTypes, error) {
-	return func(ctx context.Context) ([]Type, error) {
+	return func(ctx context.Context) (PokemonTypes, error) {
 		response := restGetFunc(ctx, typesUrl)
 
 		switch response.StatusCode() {
 		case http.StatusOK:
-			var types []Type
+			var types PokemonTypes
 			if json.Unmarshal(response.Bytes(), &types) != nil {
-				return []Type{}, ErrUnmarshalResponse
+				return PokemonTypes{}, ErrUnmarshalResponse
 			}
 			return types, nil
 		case http.StatusNotFound:
-			return []Type{}, ErrNotFound
+			return PokemonTypes{}, ErrTypesNotFound
 		default:
-			return []Type{}, rest.RequestError{
+			return PokemonTypes{}, rest.RequestError{
 				Method:          http.MethodGet,
 				URL:             typesUrl,
 				StatusCode:      response.StatusCode(),

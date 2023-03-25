@@ -10,7 +10,7 @@ import (
 	"github.com/rromero96/roro-lib/cmd/rest"
 )
 
-func TestMakeGetPokemons(t *testing.T) {
+func TestMakeGetPokemons_success(t *testing.T) {
 	restGetFunc := rest.MakeGetFuncMock(rest.NewResponse(http.StatusOK, []byte(`{}`)))
 
 	_, got := MakeGetPokemon(restGetFunc)
@@ -37,7 +37,7 @@ func TestGetPokemons_failsWithNotFound(t *testing.T) {
 	ctx := context.Background()
 	id := 1
 
-	want := ErrNotFound
+	want := ErrPokemonNotFound
 	_, got := getPokemons(ctx, id)
 
 	assert.Equal(t, got, want)
@@ -69,6 +69,65 @@ func TestGetPokemons_failsWithInternalServerError(t *testing.T) {
 		ResponsePayload: "error",
 	}
 	_, got := getPokemons(ctx, id)
+
+	assert.Equal(t, got, want)
+}
+
+func TestMakeGetTypes_success(t *testing.T) {
+	restGetFunc := rest.MakeGetFuncMock(rest.NewResponse(http.StatusOK, []byte(`{}`)))
+
+	_, got := MakeGetTypes(restGetFunc)
+
+	assert.Nil(t, got)
+}
+
+func TestTestMakeGetTypes_success(t *testing.T) {
+	restGetFunc := rest.MakeGetFuncMock(rest.NewResponse(http.StatusOK, []byte(MockPokemonTypesAsJson())))
+	getTypes, _ := MakeGetTypes(restGetFunc)
+	ctx := context.Background()
+
+	want := MockPokemonTypes()
+	got, err := getTypes(ctx)
+
+	assert.Nil(t, err)
+	assert.Equal(t, got, want)
+}
+
+func TestTestMakeGetTypes_failsWithNotFound(t *testing.T) {
+	restGetFunc := rest.MakeGetFuncMock(rest.NewResponse(http.StatusNotFound, []byte{}))
+	getTypes, _ := MakeGetTypes(restGetFunc)
+	ctx := context.Background()
+
+	want := ErrTypesNotFound
+	_, got := getTypes(ctx)
+
+	assert.Equal(t, got, want)
+}
+
+func TestTestMakeGetTypes_failsWithUnmarshalError(t *testing.T) {
+	restGetFunc := rest.MakeGetFuncMock(rest.NewResponse(http.StatusOK, []byte("InvalidBody")))
+	getTypes, _ := MakeGetTypes(restGetFunc)
+	ctx := context.Background()
+
+	want := ErrUnmarshalResponse
+	_, got := getTypes(ctx)
+
+	assert.Equal(t, got, want)
+}
+
+func TestTestMakeGetTypes_failsWithInternalServerError(t *testing.T) {
+	restGetFunc := rest.MakeGetFuncMock(rest.NewResponse(http.StatusInternalServerError, []byte("error")))
+	getTypes, _ := MakeGetTypes(restGetFunc)
+	ctx := context.Background()
+	requestURL := "https://pokeapi.co/api/v2/type"
+
+	want := rest.RequestError{
+		Method:          http.MethodGet,
+		URL:             requestURL,
+		StatusCode:      http.StatusInternalServerError,
+		ResponsePayload: "error",
+	}
+	_, got := getTypes(ctx)
 
 	assert.Equal(t, got, want)
 }

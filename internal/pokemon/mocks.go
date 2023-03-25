@@ -11,6 +11,13 @@ func MockGetPokemons(response Pokemon, err error) GetPokemon {
 	}
 }
 
+// MockGetTypes mock
+func MockGetTypes(response PokemonTypes, err error) GetTypes {
+	return func(context.Context) (PokemonTypes, error) {
+		return response, err
+	}
+}
+
 // MockPokemonAsJson mock
 func MockPokemonAsJson() string {
 	return `
@@ -69,6 +76,33 @@ func MockPokemon() Pokemon {
 			Type: Type{
 				Name: "electric",
 			},
+		}},
+	}
+}
+
+// MockPokemonTypesAsJson mock
+func MockPokemonTypesAsJson() string {
+	return `
+	{
+		"results": [
+             {
+                 "name": "normal"
+             },
+             {
+                 "name": "fighting"
+             }
+         ]
+	}
+	`
+}
+
+// MockPokemonTypes mock
+func MockPokemonTypes() PokemonTypes {
+	return PokemonTypes{
+		Types: []Type{{
+			Name: "normal",
+		}, {
+			Name: "fighting",
 		}},
 	}
 }
