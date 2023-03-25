@@ -3,9 +3,17 @@ package main
 import (
 	"log"
 	"net"
-	"net/http"
 
 	"github.com/rromero96/roro-lib/cmd/web"
+
+	"github.com/rromero96/PI-Pokemon/cmd/api/pokemon"
+)
+
+const (
+	pokemonsSearchV1      string = "/pokemons"
+	pokemonCreateV1       string = "/pokemon"
+	pokemonSearchByIDV1   string = "/pokemon/{pokemon_id}"
+	pokemonsSearchTypesV1 string = "/pokemons/types"
 )
 
 func main() {
@@ -28,14 +36,13 @@ func run() error {
 	/*
 		Endpoints
 	*/
-	app.Get("/", Hello())
+	app.Get(pokemonsSearchV1, pokemon.SearchV1())
+	app.Post(pokemonCreateV1, pokemon.CreateV1())
+
+	app.Get(pokemonSearchByIDV1, pokemon.SearchByIDV1())
+
+	app.Get(pokemonsSearchTypesV1, pokemon.SearchTypesV1())
 
 	log.Print("server up and running in port 8080")
 	return web.Run(ln, web.DefaultTimeouts, app)
-}
-
-func Hello() web.Handler {
-	return func(w http.ResponseWriter, r *http.Request) error {
-		return web.EncodeJSON(w, []byte("server upp"), http.StatusOK)
-	}
 }
