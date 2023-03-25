@@ -1,0 +1,42 @@
+package pokemon
+
+type (
+	Pokemon struct {
+		ID      int     `json:"id"`
+		Name    string  `json:"name"`
+		Height  int     `json:"height"`
+		Weight  int     `json:"weight"`
+		Sprites Sprites `json:"sprites"`
+		Stats   []Stats `json:"stats"`
+		Types   []Types `json:"types"`
+	}
+
+	Stats struct {
+		BaseStat int  `json:"base_stat"`
+		Stat     Stat `json:"stat"`
+	}
+
+	Stat struct {
+		Name string `json:"name"`
+	}
+
+	Types struct {
+		Nature Nature `json:"type"`
+	}
+
+	Nature struct {
+		Name string `json:"name"`
+	}
+
+	Sprites struct {
+		Other Other `json:"other"`
+	}
+
+	Other struct {
+		DreamWorld DreamWorld `json:"dream_world"`
+	}
+
+	DreamWorld struct {
+		FrontDefault string `json:"front_default"`
+	}
+)
