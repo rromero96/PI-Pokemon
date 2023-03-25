@@ -21,10 +21,10 @@ type (
 	}
 
 	Types struct {
-		Nature Nature `json:"type"`
+		Type Type `json:"type"`
 	}
 
-	Nature struct {
+	Type struct {
 		Name string `json:"name"`
 	}
 

@@ -66,7 +66,7 @@ func MockPokemon() Pokemon {
 			},
 		}},
 		Types: []Types{{
-			Nature: Nature{
+			Type: Type{
 				Name: "electric",
 			},
 		}},
