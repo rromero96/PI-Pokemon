@@ -10,11 +10,11 @@ import (
 )
 
 type (
-	// GetPokemon retrieves a Pokemon by id.
-	GetPokemon func(context.Context, int) (Pokemon, error)
+	// SearchPokemon retrieves a Pokemon by id.
+	SearchPokemon func(context.Context, int) (Pokemon, error)
 
-	// GetTypes retrieves the pokemon types
-	GetTypes func(context.Context) (PokemonTypes, error)
+	// SearchTypes retrieves the pokemon types
+	SearchTypes func(context.Context) (PokemonTypes, error)
 )
 
 const (
@@ -22,8 +22,8 @@ const (
 	typesUrl   string = "https://pokeapi.co/api/v2/type"
 )
 
-// MakeGetPokemons creates a new GetPokemon function
-func MakeGetPokemon(restGetFunc rest.GetFunc) (GetPokemon, error) {
+// MakeGetPokemons creates a new SearchPokemon function
+func MakeSearchPokemon(restGetFunc rest.GetFunc) (SearchPokemon, error) {
 	return func(ctx context.Context, ID int) (Pokemon, error) {
 		url := fmt.Sprintf(pokeApiUrl, ID)
 		response := restGetFunc(ctx, url)
@@ -48,8 +48,8 @@ func MakeGetPokemon(restGetFunc rest.GetFunc) (GetPokemon, error) {
 	}, nil
 }
 
-// MakeGetTypes creates a new GetTypes function
-func MakeGetTypes(restGetFunc rest.GetFunc) (GetTypes, error) {
+// MakeGetTypes creates a new SearchTypes function
+func MakeSearchTypes(restGetFunc rest.GetFunc) (SearchTypes, error) {
 	return func(ctx context.Context) (PokemonTypes, error) {
 		response := restGetFunc(ctx, typesUrl)
 

@@ -10,17 +10,17 @@ import (
 	"github.com/rromero96/roro-lib/cmd/rest"
 )
 
-func TestMakeGetPokemons_success(t *testing.T) {
+func TestMakeSearchPokemons_success(t *testing.T) {
 	restGetFunc := rest.MakeGetFuncMock(rest.NewResponse(http.StatusOK, []byte(`{}`)))
 
-	_, got := MakeGetPokemon(restGetFunc)
+	_, got := MakeSearchPokemon(restGetFunc)
 
 	assert.Nil(t, got)
 }
 
-func TestGetPokemons_success(t *testing.T) {
+func TestSearchPokemons_success(t *testing.T) {
 	restGetFunc := rest.MakeGetFuncMock(rest.NewResponse(http.StatusOK, []byte(MockPokemonAsJson())))
-	getPokemons, _ := MakeGetPokemon(restGetFunc)
+	getPokemons, _ := MakeSearchPokemon(restGetFunc)
 	ctx := context.Background()
 	id := 1
 
@@ -31,9 +31,9 @@ func TestGetPokemons_success(t *testing.T) {
 	assert.Equal(t, got, want)
 }
 
-func TestGetPokemons_failsWithNotFound(t *testing.T) {
+func TestSearchPokemons_failsWithNotFound(t *testing.T) {
 	restGetFunc := rest.MakeGetFuncMock(rest.NewResponse(http.StatusNotFound, []byte{}))
-	getPokemons, _ := MakeGetPokemon(restGetFunc)
+	getPokemons, _ := MakeSearchPokemon(restGetFunc)
 	ctx := context.Background()
 	id := 1
 
@@ -43,9 +43,9 @@ func TestGetPokemons_failsWithNotFound(t *testing.T) {
 	assert.Equal(t, got, want)
 }
 
-func TestGetPokemons_failsWithUnmarshalError(t *testing.T) {
+func TestSearchPokemons_failsWithUnmarshalError(t *testing.T) {
 	restGetFunc := rest.MakeGetFuncMock(rest.NewResponse(http.StatusOK, []byte("InvalidBody")))
-	getPokemons, _ := MakeGetPokemon(restGetFunc)
+	getPokemons, _ := MakeSearchPokemon(restGetFunc)
 	ctx := context.Background()
 	id := 1
 
@@ -55,9 +55,9 @@ func TestGetPokemons_failsWithUnmarshalError(t *testing.T) {
 	assert.Equal(t, got, want)
 }
 
-func TestGetPokemons_failsWithInternalServerError(t *testing.T) {
+func TestSearchPokemons_failsWithInternalServerError(t *testing.T) {
 	restGetFunc := rest.MakeGetFuncMock(rest.NewResponse(http.StatusInternalServerError, []byte("error")))
-	getPokemons, _ := MakeGetPokemon(restGetFunc)
+	getPokemons, _ := MakeSearchPokemon(restGetFunc)
 	ctx := context.Background()
 	id := 1
 	requestURL := "https://pokeapi.co/api/v2/pokemon/1"
@@ -73,17 +73,17 @@ func TestGetPokemons_failsWithInternalServerError(t *testing.T) {
 	assert.Equal(t, got, want)
 }
 
-func TestMakeGetTypes_success(t *testing.T) {
+func TestMakeSearchTypes_success(t *testing.T) {
 	restGetFunc := rest.MakeGetFuncMock(rest.NewResponse(http.StatusOK, []byte(`{}`)))
 
-	_, got := MakeGetTypes(restGetFunc)
+	_, got := MakeSearchTypes(restGetFunc)
 
 	assert.Nil(t, got)
 }
 
-func TestTestMakeGetTypes_success(t *testing.T) {
+func TestTestMakeSearchTypes_success(t *testing.T) {
 	restGetFunc := rest.MakeGetFuncMock(rest.NewResponse(http.StatusOK, []byte(MockPokemonTypesAsJson())))
-	getTypes, _ := MakeGetTypes(restGetFunc)
+	getTypes, _ := MakeSearchTypes(restGetFunc)
 	ctx := context.Background()
 
 	want := MockPokemonTypes()
@@ -93,9 +93,9 @@ func TestTestMakeGetTypes_success(t *testing.T) {
 	assert.Equal(t, got, want)
 }
 
-func TestTestMakeGetTypes_failsWithNotFound(t *testing.T) {
+func TestTestMakeSearchTypes_failsWithNotFound(t *testing.T) {
 	restGetFunc := rest.MakeGetFuncMock(rest.NewResponse(http.StatusNotFound, []byte{}))
-	getTypes, _ := MakeGetTypes(restGetFunc)
+	getTypes, _ := MakeSearchTypes(restGetFunc)
 	ctx := context.Background()
 
 	want := ErrTypesNotFound
@@ -104,9 +104,9 @@ func TestTestMakeGetTypes_failsWithNotFound(t *testing.T) {
 	assert.Equal(t, got, want)
 }
 
-func TestTestMakeGetTypes_failsWithUnmarshalError(t *testing.T) {
+func TestTestMakeSearchTypes_failsWithUnmarshalError(t *testing.T) {
 	restGetFunc := rest.MakeGetFuncMock(rest.NewResponse(http.StatusOK, []byte("InvalidBody")))
-	getTypes, _ := MakeGetTypes(restGetFunc)
+	getTypes, _ := MakeSearchTypes(restGetFunc)
 	ctx := context.Background()
 
 	want := ErrUnmarshalResponse
@@ -115,9 +115,9 @@ func TestTestMakeGetTypes_failsWithUnmarshalError(t *testing.T) {
 	assert.Equal(t, got, want)
 }
 
-func TestTestMakeGetTypes_failsWithInternalServerError(t *testing.T) {
+func TestTestMakeSearchTypes_failsWithInternalServerError(t *testing.T) {
 	restGetFunc := rest.MakeGetFuncMock(rest.NewResponse(http.StatusInternalServerError, []byte("error")))
-	getTypes, _ := MakeGetTypes(restGetFunc)
+	getTypes, _ := MakeSearchTypes(restGetFunc)
 	ctx := context.Background()
 	requestURL := "https://pokeapi.co/api/v2/type"
 
