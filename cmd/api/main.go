@@ -11,9 +11,9 @@ import (
 
 const (
 	pokemonsSearchV1      string = "/pokemons"
+	pokemonsSearchTypesV1 string = "/pokemons/types"
 	pokemonCreateV1       string = "/pokemon"
 	pokemonSearchByIDV1   string = "/pokemon/{pokemon_id}"
-	pokemonsSearchTypesV1 string = "/pokemons/types"
 )
 
 func main() {
@@ -37,11 +37,10 @@ func run() error {
 		Endpoints
 	*/
 	app.Get(pokemonsSearchV1, pokemon.SearchV1())
-	app.Post(pokemonCreateV1, pokemon.CreateV1())
-
-	app.Get(pokemonSearchByIDV1, pokemon.SearchByIDV1())
-
 	app.Get(pokemonsSearchTypesV1, pokemon.SearchTypesV1())
+
+	app.Post(pokemonCreateV1, pokemon.CreateV1())
+	app.Get(pokemonSearchByIDV1, pokemon.SearchByIDV1())
 
 	log.Print("server up and running in port 8080")
 	return web.Run(ln, web.DefaultTimeouts, app)
