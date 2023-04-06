@@ -1,6 +1,7 @@
 package pokemon
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/rromero96/roro-lib/cmd/web"
@@ -21,9 +22,14 @@ func SearchByIDV1() web.Handler {
 }
 
 // CreateV1 perfoms a pokemon creation
-func CreateV1() web.Handler {
+func CreateV1(createPokemon MySQLCreateFunc) web.Handler {
 	return func(w http.ResponseWriter, r *http.Request) error {
-		return nil
+		err := createPokemon(r.Context(), Pokemon{})
+		if err != nil {
+			return web.NewError(http.StatusInternalServerError, fmt.Sprint(err))
+		}
+
+		return web.EncodeJSON(w, "", http.StatusNoContent)
 	}
 }
 
