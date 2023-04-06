@@ -19,6 +19,7 @@ const (
 	pokemonCreateV1       string = "/pokemon"
 	pokemonSearchByIDV1   string = "/pokemon/{pokemon_id}"
 
+	// connectionStringFormat when its deployed needs to have the host next to @tcp, check https://github.com/go-sql-driver/mysql/
 	connectionStringFormat string = "%s:%s@tcp/%s?charset=utf8&parseTime=true"
 	mysqlDriver            string = "mysql"
 	pokemonsDB             string = "pokemons"
@@ -52,7 +53,7 @@ func run() error {
 	/*
 		Injections
 	*/
-	mysqlCreatePokemonFunc := pokemon.MakeMySQLCreateFunc(pokemonsDBClient)
+	mysqlCreatePokemonFunc := pokemon.MakeMySQLCreate(pokemonsDBClient)
 	if err != nil {
 		panic(err)
 	}
@@ -86,7 +87,6 @@ func createDBClient(connectionString string) (*sql.DB, error) {
 func getDBConnectionStringRoutes(database string) string {
 	/* 	dbUsername := config.String("databases", fmt.Sprintf("mysql.%s.username", database), "")
 	   	dbPassword := ""
-	   	dbHost := config.String("databases", fmt.Sprintf("mysql.%s.db_host", database), "")
 	   	dbName := config.String("databases", fmt.Sprintf("mysql.%s.db_name", database), "") */
 	dbUsername := "root"
 	dbPassword := ""
