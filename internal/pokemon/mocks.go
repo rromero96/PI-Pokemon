@@ -80,8 +80,8 @@ func MockPokemon() Pokemon {
 	}
 }
 
-// MockPokemonTypesAsJson mock
-func MockPokemonTypesAsJson() string {
+// MockTypesAsJson mock
+func MockTypesAsJson() string {
 	return `
 	{
 		"results": [
@@ -96,8 +96,8 @@ func MockPokemonTypesAsJson() string {
 	`
 }
 
-// MockPokemonTypes mock
-func MockPokemonTypes() PokemonTypes {
+// MockTypes mock
+func MockTypes() PokemonTypes {
 	return PokemonTypes{
 		Types: []Type{{
 			Name: "normal",

@@ -82,11 +82,11 @@ func TestMakeSearchTypes_success(t *testing.T) {
 }
 
 func TestTestMakeSearchTypes_success(t *testing.T) {
-	restGetFunc := rest.MakeGetFuncMock(rest.NewResponse(http.StatusOK, []byte(MockPokemonTypesAsJson())))
+	restGetFunc := rest.MakeGetFuncMock(rest.NewResponse(http.StatusOK, []byte(MockTypesAsJson())))
 	getTypes, _ := MakeSearchTypes(restGetFunc)
 	ctx := context.Background()
 
-	want := MockPokemonTypes()
+	want := MockTypes()
 	got, err := getTypes(ctx)
 
 	assert.Nil(t, err)
