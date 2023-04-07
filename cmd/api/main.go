@@ -86,7 +86,7 @@ func createDBClient(connectionString string) (*sql.DB, error) {
 
 func getDBConnectionStringRoutes(database string) string {
 	/* 	dbUsername := config.String("databases", fmt.Sprintf("mysql.%s.username", database), "")
-	   	dbPassword := ""
+	   	dbPassword := config.String("databases", fmt.Sprintf("mysql.%s.password", database), "")
 	   	dbName := config.String("databases", fmt.Sprintf("mysql.%s.db_name", database), "") */
 	dbUsername := "root"
 	dbPassword := ""
