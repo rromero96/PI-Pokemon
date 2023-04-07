@@ -3,6 +3,7 @@ module github.com/rromero96/PI-Pokemon
 go 1.19
 
 require (
+	github.com/go-sql-driver/mysql v1.7.0
 	github.com/rromero96/roro-lib v0.1.4
 	github.com/stretchr/testify v1.8.1
 )
