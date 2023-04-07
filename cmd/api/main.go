@@ -53,7 +53,7 @@ func run() error {
 	/*
 		Injections
 	*/
-	_ = pokemon.MakeMySQLCreate(pokemonsDBClient)
+	createPokemon := pokemon.MakeMySQLCreate(pokemonsDBClient)
 	if err != nil {
 		panic(err)
 	}
@@ -64,7 +64,7 @@ func run() error {
 	app.Get(pokemonsSearchV1, pokemon.SearchV1())
 	app.Get(pokemonsSearchTypesV1, pokemon.SearchTypesV1())
 
-	app.Post(pokemonCreateV1, pokemon.CreateV1())
+	app.Post(pokemonCreateV1, pokemon.CreateV1(createPokemon))
 	app.Get(pokemonSearchByIDV1, pokemon.SearchByIDV1())
 
 	log.Print("server up and running in port 8080")

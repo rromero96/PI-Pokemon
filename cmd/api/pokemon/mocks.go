@@ -46,6 +46,11 @@ func MockPokemon() Pokemon {
 	}
 }
 
+// MockPokemonDTO mock
+func MockPokemonDTO() PokemonDTO {
+	return MockPokemon().toDTO()
+}
+
 // MockTypes  mock
 func MockTypes() []Type {
 	return []Type{
@@ -55,6 +60,12 @@ func MockTypes() []Type {
 	}
 }
 
+// MockTypesDTO
+func MockTypesDTO() []TypeDTO {
+	return toTypesDTO(MockTypes())
+}
+
+// MockTypesAsJson mock
 func MockTypesAsJson() string {
 	return `
 	[
