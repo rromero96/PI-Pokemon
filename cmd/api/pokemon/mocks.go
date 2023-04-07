@@ -20,7 +20,7 @@ func MockPokemonAsJson() string {
 		"name": "pikachu",
 		"hp": 35,
 		"attack": 55,
-		"defesense": 40,
+		"defense": 40,
 		"image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/dream-world/25.svg",
 		"speed": 90,
 		"height": 4,

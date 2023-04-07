@@ -42,3 +42,30 @@ func (t TypeDTO) validate() error {
 
 	return nil
 }
+
+func (p PokemonDTO) toDomain() Pokemon {
+	return Pokemon{
+		ID:      *p.ID,
+		Name:    *p.Name,
+		HP:      *p.HP,
+		Attack:  *p.Attack,
+		Defense: *p.Defense,
+		Image:   *p.Image,
+		Speed:   *p.Speed,
+		Height:  *p.Height,
+		Weight:  *p.Weight,
+		Created: *p.Created,
+		Types:   toTypes(p.Types),
+	}
+}
+
+func toTypes(typesDTO []TypeDTO) []Type {
+	types := make([]Type, len(typesDTO))
+	for i, v := range typesDTO {
+		types[i] = Type{
+			Name: *v.Name,
+		}
+	}
+
+	return types
+}

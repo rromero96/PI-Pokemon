@@ -20,13 +20,17 @@ type MySQLCreate func(ctx context.Context, pokemon Pokemon) error
 // MakeMySQLCreate creates a new MySQLCreate
 func MakeMySQLCreate(db *sql.DB) MySQLCreate {
 	return func(ctx context.Context, pokemon Pokemon) error {
+		if pokemon.Image == "" {
+			pokemon.Image = defaultImage
+		}
+
 		stmt, err := db.PrepareContext(ctx, queryInsert)
 		if err != nil {
 			log.Error(ctx, err.Error())
 			return ErrCantPrepareStatement
 		}
 
-		_, err = stmt.ExecContext(ctx, pokemon.ID, pokemon.Name, pokemon.HP, pokemon.Attack, pokemon.Defense, defaultImage, pokemon.Speed, pokemon.Height, pokemon.Weight, pokemon.Created)
+		_, err = stmt.ExecContext(ctx, pokemon.ID, pokemon.Name, pokemon.HP, pokemon.Attack, pokemon.Defense, pokemon.Image, pokemon.Speed, pokemon.Height, pokemon.Weight, pokemon.Created)
 		if err != nil {
 			log.Error(ctx, err.Error())
 			return ErrCantRunQuery

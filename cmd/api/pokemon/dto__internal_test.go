@@ -41,3 +41,21 @@ func TestTypes_Validate_failsWithInvalidBody(t *testing.T) {
 
 	assert.Equal(t, got, want)
 }
+
+func TestPokemon_ToDomain_success(t *testing.T) {
+	pokemon := MockPokemonDTO()
+
+	want := MockPokemon()
+	got := pokemon.toDomain()
+
+	assert.Equal(t, got, want)
+}
+
+func TestToTypes_success(t *testing.T) {
+	types := MockTypesDTO()
+
+	want := MockTypes()
+	got := toTypes(types)
+
+	assert.Equal(t, got, want)
+}
