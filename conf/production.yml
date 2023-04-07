@@ -1,6 +1,7 @@
 databases:
   mysql:
-    username: "root"
-    password: ""
-    db_name: "pokemons"
-    db_host: "root:tcp(localhost:3306)"
+    pokemons:
+     username: "root"
+     password: ""
+     db_name: "pokemons"
+     db_host: "root:tcp(localhost:3306)"

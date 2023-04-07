@@ -9,7 +9,7 @@ import (
 )
 
 const (
-	queryInsert string = "INSERT INTO pokemon (id, name, hp, attack, defense, image, speed, height, weight, created) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);"
+	queryInsert string = "INSERT INTO pokemon (id, name, hp, attack, defense, image, speed, height, weight, created) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
 
 	defaultImage string = "https://pokeapi.co/api/v2/pokemon/1/"
 )
@@ -23,7 +23,7 @@ func MakeMySQLCreate(db *sql.DB) MySQLCreate {
 		stmt, err := db.PrepareContext(ctx, queryInsert)
 		if err != nil {
 			log.Error(ctx, err.Error())
-			return err
+			return ErrCantPrepareStatement
 		}
 
 		_, err = stmt.ExecContext(ctx, pokemon.ID, pokemon.Name, pokemon.HP, pokemon.Attack, pokemon.Defense, defaultImage, pokemon.Speed, pokemon.Height, pokemon.Weight, pokemon.Created)
