@@ -6,8 +6,7 @@
 
 ### Transactions / Endpoints
 - [ ] All
-- [ ] GET /pokemons
-- [ ] GET /pokemons/types
-- [ ] POST /pokemon
-- [ ] GET /pokemon/:pokemon_id
-
+- [ ] GET /pokemons/v1
+- [ ] GET /pokemons/types/v1
+- [ ] POST /pokemon/v1
+- [ ] GET /pokemon/:pokemon_id/v1

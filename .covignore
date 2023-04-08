@@ -1,0 +1,3 @@
+cmd/api/main.go
+cmd/pokemon/mocks.go
+internal/pokemon/mocks.go

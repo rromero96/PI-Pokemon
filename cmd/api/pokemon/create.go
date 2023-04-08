@@ -8,11 +8,7 @@ import (
 	"github.com/rromero96/roro-lib/cmd/log"
 )
 
-const (
-	queryInsert string = "INSERT INTO pokemon (id, name, hp, attack, defense, image, speed, height, weight, created) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
-
-	defaultImage string = "https://pokeapi.co/api/v2/pokemon/1/"
-)
+const queryInsert string = "INSERT INTO pokemon (id, name, hp, attack, defense, image, speed, height, weight, created) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
 
 // MySQLCreateFunc serves to create a new row into "pokemons" database
 type MySQLCreate func(ctx context.Context, pokemon Pokemon) error
@@ -26,7 +22,7 @@ func MakeMySQLCreate(db *sql.DB) MySQLCreate {
 			return ErrCantPrepareStatement
 		}
 
-		_, err = stmt.ExecContext(ctx, pokemon.ID, pokemon.Name, pokemon.HP, pokemon.Attack, pokemon.Defense, defaultImage, pokemon.Speed, pokemon.Height, pokemon.Weight, pokemon.Created)
+		_, err = stmt.ExecContext(ctx, pokemon.ID, pokemon.Name, pokemon.HP, pokemon.Attack, pokemon.Defense, pokemon.Image, pokemon.Speed, pokemon.Height, pokemon.Weight, pokemon.Created)
 		if err != nil {
 			log.Error(ctx, err.Error())
 			return ErrCantRunQuery

@@ -1,6 +1,7 @@
 package pokemon
 
 import (
+	"errors"
 	"net/http"
 
 	"github.com/rromero96/roro-lib/cmd/web"
@@ -21,9 +22,24 @@ func SearchByIDV1() web.Handler {
 }
 
 // CreateV1 perfoms a pokemon creation
-func CreateV1() web.Handler {
+func CreateV1(createPokemon MySQLCreate) web.Handler {
 	return func(w http.ResponseWriter, r *http.Request) error {
-		return nil
+		var body PokemonDTO
+		if web.DecodeJSON(r, &body) != nil || body.validate() != nil {
+			return web.NewError(http.StatusBadRequest, InvalidBody)
+		}
+
+		err := createPokemon(r.Context(), body.toDomain())
+		if err != nil {
+			switch {
+			case errors.Is(err, ErrCantRunQuery):
+				return web.NewError(http.StatusBadRequest, InvalidPokemon)
+			default:
+				return web.NewError(http.StatusInternalServerError, CantCreatePokemon)
+			}
+		}
+
+		return web.EncodeJSON(w, "", http.StatusNoContent)
 	}
 }
 
