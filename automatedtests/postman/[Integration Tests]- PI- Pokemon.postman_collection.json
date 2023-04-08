@@ -1,0 +1,205 @@
+{
+	"info": {
+		"_postman_id": "996e1c8d-7154-47c7-aab3-b54fb139fe97",
+		"name": "[Integration Tests]- PI- Pokemon",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "18593853"
+	},
+	"item": [
+		{
+			"name": "SearchV1",
+			"item": []
+		},
+		{
+			"name": "SearchByIDV1",
+			"item": []
+		},
+		{
+			"name": "CreateV1",
+			"item": [
+				{
+					"name": "Success cases",
+					"item": [
+						{
+							"name": "CreateV1 -OK",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 204\",",
+											"function(){",
+											"    pm.response.to.have.status(204)",
+											"})"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"name\": \"test2\",\n\t\"hp\": 35,\n\t\"attack\": 55,\n\t\"defense\": 40,\n\t\"speed\": 90,\n\t\"height\": 4,\n\t\"weight\": 60,\n    \"created\": true,\n\t\"types\" : [\n        {\n         \"name\": \"poison\"\n        },\n        {\n          \"name\": \"grass\"\n        }\n    ]\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{localhost}}/pokemon/v1",
+									"host": [
+										"{{localhost}}"
+									],
+									"path": [
+										"pokemon",
+										"v1"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Fail cases",
+					"item": [
+						{
+							"name": "CreateV1 - User repeated",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\",",
+											"function(){",
+											"    pm.response.to.have.status(400)",
+											"})",
+											"",
+											"pm.test(`",
+											"\t\"code\" :\"bad_request\"",
+											"\t\"message\": \"invalid pokemon\"",
+											"`, () => {",
+											"    const responseJson = pm.response.json();",
+											"    pm.expect(responseJson[\"code\"]).to.eql(\"bad_request\");",
+											"    pm.expect(responseJson[\"message\"]).to.eql(\"invalid pokemon\");",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"name\": \"test2\",\n\t\"hp\": 35,\n\t\"attack\": 55,\n\t\"defense\": 40,\n\t\"speed\": 90,\n\t\"height\": 4,\n\t\"weight\": 60,\n    \"created\": true,\n\t\"types\" : [\n        {\n         \"name\": \"poison\"\n        },\n        {\n          \"name\": \"grass\"\n        }\n    ]\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{localhost}}/pokemon/v1",
+									"host": [
+										"{{localhost}}"
+									],
+									"path": [
+										"pokemon",
+										"v1"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "CreateV1 - User with invalid body",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\",",
+											"function(){",
+											"    pm.response.to.have.status(400)",
+											"})",
+											"",
+											"pm.test(`",
+											"\t\"code\" :\"bad_request\"",
+											"\t\"message\": \"invalid body\"",
+											"`, () => {",
+											"    const responseJson = pm.response.json();",
+											"    pm.expect(responseJson[\"code\"]).to.eql(\"bad_request\");",
+											"    pm.expect(responseJson[\"message\"]).to.eql(\"invalid body\");",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"hp\": 35,\n\t\"attack\": 55,\n\t\"defense\": 40,\n\t\"speed\": 90,\n\t\"height\": 4,\n\t\"weight\": 60,\n    \"created\": true,\n\t\"types\" : [\n        {\n         \"name\": \"poison\"\n        },\n        {\n          \"name\": \"grass\"\n        }\n    ]\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{localhost}}/pokemon/v1",
+									"host": [
+										"{{localhost}}"
+									],
+									"path": [
+										"pokemon",
+										"v1"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "SearchTypesV1",
+			"item": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "localhost",
+			"value": "http://localhost:8080",
+			"type": "string"
+		}
+	]
+}
