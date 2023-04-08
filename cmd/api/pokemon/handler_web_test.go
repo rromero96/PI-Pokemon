@@ -7,9 +7,10 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/rromero96/PI-Pokemon/cmd/api/pokemon"
 	"github.com/rromero96/roro-lib/cmd/web"
 	"github.com/stretchr/testify/assert"
+
+	"github.com/rromero96/PI-Pokemon/cmd/api/pokemon"
 )
 
 func TestHTTPHandler_CreateV1_success(t *testing.T) {
