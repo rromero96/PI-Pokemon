@@ -1,7 +1,9 @@
 package pokemon
 
+const imageDefault string = "https://pokeapi.co/api/v2/pokemon/1/"
+
 type PokemonDTO struct {
-	ID      *string   `json:"id,omitempty"`
+	ID      *int      `json:"id,omitempty"`
 	Name    *string   `json:"name"`
 	HP      *int      `json:"hp"`
 	Attack  *int      `json:"attack"`
@@ -44,17 +46,32 @@ func (t TypeDTO) validate() error {
 }
 
 func (p PokemonDTO) toDomain() Pokemon {
+	id := 0
+	if p.ID != nil {
+		id = *p.ID
+	}
+
+	image := imageDefault
+	if p.Image != nil {
+		image = *p.Image
+	}
+
+	created := false
+	if p.Created != nil {
+		created = *p.Created
+	}
+
 	return Pokemon{
-		ID:      *p.ID,
+		ID:      id,
 		Name:    *p.Name,
 		HP:      *p.HP,
 		Attack:  *p.Attack,
 		Defense: *p.Defense,
-		Image:   *p.Image,
+		Image:   image,
 		Speed:   *p.Speed,
 		Height:  *p.Height,
 		Weight:  *p.Weight,
-		Created: *p.Created,
+		Created: created,
 		Types:   toTypes(p.Types),
 	}
 }

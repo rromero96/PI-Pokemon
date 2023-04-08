@@ -12,6 +12,6 @@ var (
 
 const (
 	InvalidBody       string = "invalid body"
-	BadRequest        string = "bad request"
+	InvalidPokemon    string = "invalid pokemon"
 	CantCreatePokemon string = "can't create pokemon"
 )

@@ -33,7 +33,7 @@ func CreateV1(createPokemon MySQLCreate) web.Handler {
 		if err != nil {
 			switch {
 			case errors.Is(err, ErrCantRunQuery):
-				return web.NewError(http.StatusBadRequest, BadRequest)
+				return web.NewError(http.StatusBadRequest, InvalidPokemon)
 			default:
 				return web.NewError(http.StatusInternalServerError, CantCreatePokemon)
 			}

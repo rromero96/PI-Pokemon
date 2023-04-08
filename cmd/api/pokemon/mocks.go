@@ -16,7 +16,7 @@ func MockMySQLCreate(err error) MySQLCreate {
 func MockPokemonAsJson() string {
 	return fmt.Sprintf(`
 	{
-		"id": "25",
+		"id": 25,
 		"name": "pikachu",
 		"hp": 35,
 		"attack": 55,
@@ -33,7 +33,7 @@ func MockPokemonAsJson() string {
 // MockPokemon mock
 func MockPokemon() Pokemon {
 	return Pokemon{
-		ID:      "25",
+		ID:      25,
 		Name:    "pikachu",
 		HP:      35,
 		Attack:  55,

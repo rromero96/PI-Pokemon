@@ -1,7 +1,7 @@
 package pokemon
 
 type Pokemon struct {
-	ID      string
+	ID      int
 	Name    string
 	HP      int
 	Attack  int
