@@ -53,7 +53,12 @@ func run() error {
 	/*
 		Injections
 	*/
-	createPokemon := pokemon.MakeMySQLCreate(pokemonsDBClient)
+	addTypes := pokemon.MakeMySQLAdd(pokemonsDBClient)
+	if err != nil {
+		panic(err)
+	}
+
+	createPokemon := pokemon.MakeMySQLCreate(pokemonsDBClient, addTypes)
 	if err != nil {
 		panic(err)
 	}

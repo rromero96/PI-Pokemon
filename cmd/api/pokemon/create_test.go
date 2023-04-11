@@ -20,8 +20,9 @@ func TestMakeMySQLCreate_success(t *testing.T) {
 	db, mock, _ := sqlmock.New()
 	mock.ExpectPrepare(queryCreateMock)
 	mock.ExpectExec(queryCreateMock).WillReturnResult(sqlmock.NewResult(1, 2))
+	mysqlAdd := pokemon.MockMySQLAdd(nil)
 
-	got := pokemon.MakeMySQLCreate(db)
+	got := pokemon.MakeMySQLCreate(db, mysqlAdd)
 
 	assert.NotNil(t, got)
 }
@@ -30,8 +31,9 @@ func TestMySQLCreate_success(t *testing.T) {
 	db, mock, _ := sqlmock.New()
 	mock.ExpectPrepare(queryCreateMock)
 	mock.ExpectExec(queryCreateMock).WillReturnResult(sqlmock.NewResult(1, 2))
+	mysqlAdd := pokemon.MockMySQLAdd(nil)
 
-	mysqlCreate := pokemon.MakeMySQLCreate(db)
+	mysqlCreate := pokemon.MakeMySQLCreate(db, mysqlAdd)
 	ctx := context.Background()
 
 	got := mysqlCreate(ctx, pokemon.MockPokemon())
@@ -43,8 +45,9 @@ func TestMySQLCreate_failsWhenCantPrepareStatement(t *testing.T) {
 	db, mock, _ := sqlmock.New()
 	mock.ExpectPrepare("invalid statement")
 	mock.ExpectExec(queryCreateMock).WillReturnResult(sqlmock.NewResult(1, 2))
+	mysqlAdd := pokemon.MockMySQLAdd(nil)
 
-	mysqlCreate := pokemon.MakeMySQLCreate(db)
+	mysqlCreate := pokemon.MakeMySQLCreate(db, mysqlAdd)
 	ctx := context.Background()
 
 	want := pokemon.ErrCantPrepareStatement
@@ -57,11 +60,27 @@ func TestMySQLCreate_failsWhenCantRunQuery(t *testing.T) {
 	db, mock, _ := sqlmock.New()
 	mock.ExpectPrepare(queryCreateMock)
 	mock.ExpectExec(queryCreateMock).WillReturnError(errors.New("some error"))
+	mysqlAdd := pokemon.MockMySQLAdd(nil)
 
-	mysqlCreate := pokemon.MakeMySQLCreate(db)
+	mysqlCreate := pokemon.MakeMySQLCreate(db, mysqlAdd)
 	ctx := context.Background()
 
 	want := pokemon.ErrCantRunQuery
+	got := mysqlCreate(ctx, pokemon.MockPokemon())
+
+	assert.Equal(t, want, got)
+}
+
+func TestMySQLCreate_failsWhenAddTypesThrowsError(t *testing.T) {
+	db, mock, _ := sqlmock.New()
+	mock.ExpectPrepare(queryCreateMock)
+	mock.ExpectExec(queryCreateMock).WillReturnResult(sqlmock.NewResult(1, 2))
+	mysqlAdd := pokemon.MockMySQLAdd(pokemon.ErrCantAddTypes)
+
+	mysqlCreate := pokemon.MakeMySQLCreate(db, mysqlAdd)
+	ctx := context.Background()
+
+	want := pokemon.ErrCantAddTypes
 	got := mysqlCreate(ctx, pokemon.MockPokemon())
 
 	assert.Equal(t, want, got)

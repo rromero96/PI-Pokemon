@@ -23,7 +23,7 @@ type (
 )
 
 // MakeMySQLCreate creates a new MySQLCreate
-func MakeMySQLCreate(db *sql.DB) MySQLCreate {
+func MakeMySQLCreate(db *sql.DB, addTypes MySQLAdd) MySQLCreate {
 	return func(ctx context.Context, pokemon Pokemon) error {
 		stmt, err := db.PrepareContext(ctx, queryCreate)
 		if err != nil {
@@ -32,10 +32,20 @@ func MakeMySQLCreate(db *sql.DB) MySQLCreate {
 		}
 		defer stmt.Close()
 
-		_, err = stmt.ExecContext(ctx, pokemon.ID, pokemon.Name, pokemon.HP, pokemon.Attack, pokemon.Defense, pokemon.Image, pokemon.Speed, pokemon.Height, pokemon.Weight, pokemon.Created)
+		p, err := stmt.ExecContext(ctx, pokemon.ID, pokemon.Name, pokemon.HP, pokemon.Attack, pokemon.Defense, pokemon.Image, pokemon.Speed, pokemon.Height, pokemon.Weight, pokemon.Created)
 		if err != nil {
 			log.Error(ctx, err.Error())
 			return ErrCantRunQuery
+		}
+
+		id, err := p.LastInsertId()
+		if err != nil {
+			return ErrCantGetLastID
+		}
+
+		err = addTypes(ctx, int(id), pokemon.Types)
+		if err != nil {
+			return ErrCantAddTypes
 		}
 
 		return nil
