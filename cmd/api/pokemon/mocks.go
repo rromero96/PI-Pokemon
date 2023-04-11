@@ -12,6 +12,13 @@ func MockMySQLCreate(err error) MySQLCreate {
 	}
 }
 
+// MockMySQLCreate
+func MockMySQLAdd(err error) MySQLAdd {
+	return func(context.Context, int, []Type) error {
+		return err
+	}
+}
+
 // MockPokemonAsJson mock
 func MockPokemonAsJson() string {
 	return fmt.Sprintf(`
