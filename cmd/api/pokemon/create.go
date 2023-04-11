@@ -40,11 +40,13 @@ func MakeMySQLCreate(db *sql.DB, addTypes MySQLAdd) MySQLCreate {
 
 		id, err := p.LastInsertId()
 		if err != nil {
+			log.Error(ctx, err.Error())
 			return ErrCantGetLastID
 		}
 
 		err = addTypes(ctx, int(id), pokemon.Types)
 		if err != nil {
+			log.Error(ctx, err.Error())
 			return ErrCantAddTypes
 		}
 
