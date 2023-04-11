@@ -12,8 +12,9 @@ import (
 )
 
 const (
-	queryCreateMock = "INSERT INTO pokemon \\(id, name, hp, attack, defense, image, speed, height, weight, created\\) VALUES \\(\\?, \\?, \\?, \\?, \\?, \\?, \\?, \\?, \\?, \\?\\)"
-	queryAddMock    = "INSERT INTO pokemon_type \\(pokemon_id, type_name\\) VALUES \\(\\?, \\?\\)"
+	queryCreateMock     string = "INSERT INTO pokemon \\(id, name, hp, attack, defense, image, speed, height, weight, created\\) VALUES \\(\\?, \\?, \\?, \\?, \\?, \\?, \\?, \\?, \\?, \\?\\)"
+	queryAddMock        string = "INSERT INTO pokemon_type \\(pokemon_id, type_name\\) VALUES \\(\\?, \\?\\)"
+	queryCreateTypeMock string = "INSERT INTO type \\(name\\) VALUES \\(\\?\\)"
 )
 
 func TestMakeMySQLCreate_success(t *testing.T) {
@@ -132,6 +133,56 @@ func TestMySQLAdd_failsWhenCantRunQuery(t *testing.T) {
 
 	want := pokemon.ErrCantRunQuery
 	got := mysqlAdd(ctx, pokemon.MockPokemon().ID, pokemon.MockTypes())
+
+	assert.Equal(t, want, got)
+}
+
+func TestMakeMySQLCreateTypes_success(t *testing.T) {
+	db, mock, _ := sqlmock.New()
+	mock.ExpectPrepare(queryCreateTypeMock)
+	mock.ExpectExec(queryCreateTypeMock).WillReturnResult(sqlmock.NewResult(1, 2))
+
+	got := pokemon.MakeMySQLCreateType(db)
+
+	assert.NotNil(t, got)
+}
+
+func TestMySQLCreateTypes_success(t *testing.T) {
+	db, mock, _ := sqlmock.New()
+	mock.ExpectPrepare(queryCreateTypeMock)
+	mock.ExpectExec(queryCreateTypeMock).WillReturnResult(sqlmock.NewResult(1, 2))
+
+	mysqlCreateType := pokemon.MakeMySQLCreateType(db)
+	ctx := context.Background()
+
+	got := mysqlCreateType(ctx, pokemon.MockTypes())
+
+	assert.Nil(t, got)
+}
+
+func TestMySQLCreateTypes_failsWhenCantPrepareStatement(t *testing.T) {
+	db, mock, _ := sqlmock.New()
+	mock.ExpectPrepare("invalid statement")
+	mock.ExpectExec(queryCreateTypeMock).WillReturnResult(sqlmock.NewResult(1, 2))
+
+	mysqlCreateType := pokemon.MakeMySQLCreateType(db)
+	ctx := context.Background()
+	want := pokemon.ErrCantPrepareStatement
+	got := mysqlCreateType(ctx, pokemon.MockTypes())
+
+	assert.Equal(t, want, got)
+}
+
+func TestMySQLCreateTypes_failsWhenCantRunQuery(t *testing.T) {
+	db, mock, _ := sqlmock.New()
+	mock.ExpectPrepare(queryCreateTypeMock)
+	mock.ExpectExec(queryCreateTypeMock).WillReturnError(errors.New("some error"))
+
+	mysqlCreateType := pokemon.MakeMySQLCreateType(db)
+	ctx := context.Background()
+
+	want := pokemon.ErrCantRunQuery
+	got := mysqlCreateType(ctx, pokemon.MockTypes())
 
 	assert.Equal(t, want, got)
 }
