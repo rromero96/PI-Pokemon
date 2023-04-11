@@ -5,16 +5,23 @@ import (
 	"fmt"
 )
 
-// MockMySQLCreate
+// MockMySQLCreate mock
 func MockMySQLCreate(err error) MySQLCreate {
 	return func(context.Context, Pokemon) error {
 		return err
 	}
 }
 
-// MockMySQLCreate
+// MockMySQLCreate mock
 func MockMySQLAdd(err error) MySQLAdd {
 	return func(context.Context, int, []Type) error {
+		return err
+	}
+}
+
+// MockMySQLCreateType mock
+func MockMySQLCreateType(err error) MySQLCreateType {
+	return func(context.Context, []Type) error {
 		return err
 	}
 }
