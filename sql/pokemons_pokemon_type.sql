@@ -1,5 +1,3 @@
-CREATE DATABASE  IF NOT EXISTS `pokemons` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
-USE `pokemons`;
 -- MySQL dump 10.13  Distrib 8.0.27, for macos11 (x86_64)
 --
 -- Host: localhost    Database: pokemons
@@ -26,11 +24,11 @@ DROP TABLE IF EXISTS `pokemon_type`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `pokemon_type` (
   `pokemon_id` int NOT NULL,
-  `type_id` int NOT NULL,
-  PRIMARY KEY (`pokemon_id`,`type_id`),
-  KEY `type_id` (`type_id`),
+  `type_name` varchar(255) NOT NULL,
+  PRIMARY KEY (`pokemon_id`,`type_name`),
+  KEY `pokemon_type_ibfk_2` (`type_name`),
   CONSTRAINT `pokemon_type_ibfk_1` FOREIGN KEY (`pokemon_id`) REFERENCES `pokemon` (`id`),
-  CONSTRAINT `pokemon_type_ibfk_2` FOREIGN KEY (`type_id`) REFERENCES `type` (`id`)
+  CONSTRAINT `pokemon_type_ibfk_2` FOREIGN KEY (`type_name`) REFERENCES `type` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -52,4 +50,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-03-29 12:24:51
+-- Dump completed on 2023-04-10 21:15:45
