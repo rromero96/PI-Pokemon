@@ -48,7 +48,7 @@ func MakeMySQLCreate(db *sql.DB, addTypes MySQLAdd) MySQLCreate {
 			return ErrCantGetLastID
 		}
 
-		if addTypes(ctx, int(id), pokemon.Types) != nil {
+		if err := addTypes(ctx, int(id), pokemon.Types); err != nil {
 			log.Error(ctx, err.Error())
 			return ErrCantAddTypes
 		}
