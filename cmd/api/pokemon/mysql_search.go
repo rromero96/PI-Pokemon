@@ -41,7 +41,7 @@ func MakeMySQLSearchTypes(db *sql.DB) (MySQLSearchTypes, error) {
 			}
 			types = append(types, t)
 		}
-		if err := rows.Err(); err != nil {
+		if rows.Err() != nil {
 			log.Error(ctx, err.Error())
 			return nil, ErrCantReadRows
 		}
