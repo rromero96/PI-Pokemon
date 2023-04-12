@@ -15,7 +15,7 @@ type Pokemon struct {
 }
 
 type Type struct {
-	ID   string
+	ID   int
 	Name string
 }
 
