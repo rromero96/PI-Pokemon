@@ -14,7 +14,7 @@ func SearchV1() web.Handler {
 	}
 }
 
-// SearchVByIDV1 performs a search to obtain a pokemon by ID
+// SearchVByIDV1 performs a search to obtain a pokemon by ID or by name
 func SearchByIDV1() web.Handler {
 	return func(w http.ResponseWriter, r *http.Request) error {
 		return nil

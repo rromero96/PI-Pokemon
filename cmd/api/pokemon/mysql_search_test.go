@@ -11,7 +11,7 @@ import (
 )
 
 const (
-	querySearchTypesMock string = "SELECT id, name FROM type"
+	querySearchTypesMock string = "SELECT id, name FROM type ORDER BY id ASC"
 )
 
 func TestMakeMySQLSearchType_success(t *testing.T) {

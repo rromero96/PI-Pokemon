@@ -9,9 +9,11 @@ import (
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/rromero96/roro-lib/cmd/config"
+	"github.com/rromero96/roro-lib/cmd/rest"
 	"github.com/rromero96/roro-lib/cmd/web"
 
 	"github.com/rromero96/PI-Pokemon/cmd/api/pokemon"
+	internalPokemon "github.com/rromero96/PI-Pokemon/internal/pokemon"
 )
 
 const (
@@ -54,15 +56,24 @@ func run() error {
 	/*
 		Injections
 	*/
+	/*	mysql	*/
 	addTypes := pokemon.MakeMySQLAdd(pokemonsDBClient)
+	mysqlCreatePokemon := pokemon.MakeMySQLCreate(pokemonsDBClient, addTypes)
+	mysqlCreateTypes := pokemon.MakeMySQLCreateType(pokemonsDBClient)
+	mysqlSearchTypes, err := pokemon.MakeMySQLSearchTypes(pokemonsDBClient)
 	if err != nil {
-		panic(err)
+		return err
 	}
 
-	createPokemon := pokemon.MakeMySQLCreate(pokemonsDBClient, addTypes)
+	/*	internal	*/
+	restGetFunc := rest.MakeGetFunc("", "")
+	pokemonTypeSearch, err := internalPokemon.MakeSearchTypes(restGetFunc)
 	if err != nil {
-		panic(err)
+		return err
 	}
+
+	/*	api	*/
+	_ = pokemon.MakeSearchTypes(mysqlSearchTypes, pokemonTypeSearch, mysqlCreateTypes)
 
 	/*
 		Endpoints
@@ -70,7 +81,7 @@ func run() error {
 	app.Get(pokemonsSearchV1, pokemon.SearchV1())
 	app.Get(pokemonsSearchTypesV1, pokemon.SearchTypesV1())
 
-	app.Post(pokemonCreateV1, pokemon.CreateV1(createPokemon))
+	app.Post(pokemonCreateV1, pokemon.CreateV1(mysqlCreatePokemon))
 	app.Get(pokemonSearchByIDV1, pokemon.SearchByIDV1())
 
 	log.Print("server up and running in port 8080")

@@ -26,6 +26,20 @@ func MockMySQLCreateType(err error) MySQLCreateType {
 	}
 }
 
+// MockMySQLSearchTypes mock
+func MockMySQLSearchTypes(res []Type, err error) MySQLSearchTypes {
+	return func(context.Context) ([]Type, error) {
+		return res, err
+	}
+}
+
+// MockSearchTypes mock
+func MockSearchTypes(res []Type, err error) SearchTypes {
+	return func(ctx context.Context) ([]Type, error) {
+		return res, err
+	}
+}
+
 // MockPokemonAsJson mock
 func MockPokemonAsJson() string {
 	return fmt.Sprintf(`

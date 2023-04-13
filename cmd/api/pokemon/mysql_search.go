@@ -8,7 +8,7 @@ import (
 )
 
 const (
-	querySearchTypes string = "SELECT id, name FROM type"
+	querySearchTypes string = "SELECT id, name FROM type ORDER BY id ASC"
 )
 
 type (

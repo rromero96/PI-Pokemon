@@ -86,10 +86,7 @@ func MockTypesAsJson() string {
 	{
 		"results": [
              {
-                 "name": "normal"
-             },
-             {
-                 "name": "fighting"
+                 "name": "electric"
              }
          ]
 	}
@@ -100,9 +97,7 @@ func MockTypesAsJson() string {
 func MockTypes() PokemonTypes {
 	return PokemonTypes{
 		Types: []Type{{
-			Name: "normal",
-		}, {
-			Name: "fighting",
+			Name: "electric",
 		}},
 	}
 }

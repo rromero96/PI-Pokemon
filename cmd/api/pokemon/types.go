@@ -1,5 +1,7 @@
 package pokemon
 
+import "github.com/rromero96/PI-Pokemon/internal/pokemon"
+
 type Pokemon struct {
 	ID      int
 	Name    string
@@ -44,4 +46,15 @@ func toTypesDTO(types []Type) []TypeDTO {
 	}
 
 	return typesDTO
+}
+
+func toTypesSlice(pokemonTypes []pokemon.Type) []Type {
+	types := make([]Type, len(pokemonTypes))
+	for i, v := range pokemonTypes {
+		types[i] = Type{
+			Name: v.Name,
+		}
+	}
+
+	return types
 }
