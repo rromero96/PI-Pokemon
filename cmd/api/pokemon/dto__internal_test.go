@@ -34,7 +34,7 @@ func TestTypes_Validate_success(t *testing.T) {
 
 func TestTypes_Validate_failsWithInvalidBody(t *testing.T) {
 	types := MockTypesDTO()
-	types[0].Name = nil
+	types[0].Name = ""
 
 	want := ErrInvalidBody
 	got := types[0].validate()

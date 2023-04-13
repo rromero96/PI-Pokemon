@@ -14,7 +14,7 @@ import (
 const (
 	queryCreateMock     string = "INSERT INTO pokemon \\(id, name, hp, attack, defense, image, speed, height, weight, created\\) VALUES \\(\\?, \\?, \\?, \\?, \\?, \\?, \\?, \\?, \\?, \\?\\)"
 	queryAddMock        string = "INSERT INTO pokemon_type \\(pokemon_id, type_name\\) VALUES \\(\\?, \\?\\)"
-	queryCreateTypeMock string = "INSERT INTO type \\(name\\) VALUES \\(\\?\\)"
+	queryCreateTypeMock string = "INSERT INTO type \\(id, name\\) VALUES \\(\\?, \\?\\)"
 )
 
 func TestMakeMySQLCreate_success(t *testing.T) {
