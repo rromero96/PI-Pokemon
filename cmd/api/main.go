@@ -73,13 +73,13 @@ func run() error {
 	}
 
 	/*	api	*/
-	_ = pokemon.MakeSearchTypes(mysqlSearchTypes, pokemonTypeSearch, mysqlCreateTypes)
+	searchTypes := pokemon.MakeSearchTypes(mysqlSearchTypes, pokemonTypeSearch, mysqlCreateTypes)
 
 	/*
 		Endpoints
 	*/
 	app.Get(pokemonsSearchV1, pokemon.SearchV1())
-	app.Get(pokemonsSearchTypesV1, pokemon.SearchTypesV1())
+	app.Get(pokemonsSearchTypesV1, pokemon.SearchTypesV1(searchTypes))
 
 	app.Post(pokemonCreateV1, pokemon.CreateV1(mysqlCreatePokemon))
 	app.Get(pokemonSearchByIDV1, pokemon.SearchByIDV1())

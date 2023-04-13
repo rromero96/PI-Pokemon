@@ -44,8 +44,13 @@ func CreateV1(createPokemon MySQLCreate) web.Handler {
 }
 
 // SearchTypesV1 performs a search to obtain all pokemon types
-func SearchTypesV1() web.Handler {
+func SearchTypesV1(searchTypes SearchTypes) web.Handler {
 	return func(w http.ResponseWriter, r *http.Request) error {
-		return nil
+		types, err := searchTypes(r.Context())
+		if err != nil {
+			return web.NewError(http.StatusInternalServerError, CantGetTypes)
+		}
+
+		return web.EncodeJSON(w, toTypesDTO(types), http.StatusOK)
 	}
 }
