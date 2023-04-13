@@ -17,8 +17,8 @@ type PokemonDTO struct {
 }
 
 type TypeDTO struct {
-	ID   *string `json:"id,omitempty"`
-	Name *string `json:"name"`
+	ID   int    `json:"id,omitempty"`
+	Name string `json:"name"`
 }
 
 func (p PokemonDTO) validate() error {
@@ -38,7 +38,7 @@ func (p PokemonDTO) validate() error {
 }
 
 func (t TypeDTO) validate() error {
-	if t.Name == nil {
+	if t.Name == "" {
 		return ErrInvalidBody
 	}
 
@@ -80,7 +80,7 @@ func toTypes(typesDTO []TypeDTO) []Type {
 	types := make([]Type, len(typesDTO))
 	for i, v := range typesDTO {
 		types[i] = Type{
-			Name: *v.Name,
+			Name: v.Name,
 		}
 	}
 

@@ -27,8 +27,10 @@ func TestToTypesDTO_success(t *testing.T) {
 
 func TestToTypesSlice_success(t *testing.T) {
 	pokemonTypes := pokemon.MockTypes()
+	types := MockTypes()
+	types[0].ID = 1
 
-	want := MockTypes()
+	want := types
 	got := toTypesSlice(pokemonTypes.Types)
 
 	assert.Equal(t, got, want)

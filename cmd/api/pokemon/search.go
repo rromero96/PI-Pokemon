@@ -27,7 +27,6 @@ func MakeSearchTypes(mysqlSearchTypes MySQLSearchTypes, searchPokemonTypes pokem
 				log.Error(ctx, err.Error())
 				return []Type{}, ErrCantSearchPokemonTypes
 			}
-
 			types = toTypesSlice(pokemonTypes.Types)
 
 			if err = mysqlCreateTypes(ctx, types); err != nil {

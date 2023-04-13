@@ -12,7 +12,7 @@ import (
 const (
 	queryCreate     string = "INSERT INTO pokemon (id, name, hp, attack, defense, image, speed, height, weight, created) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
 	queryAdd        string = "INSERT INTO pokemon_type (pokemon_id, type_name) VALUES "
-	queryCreateType string = "INSERT INTO type (name) VALUES "
+	queryCreateType string = "INSERT INTO type (id, name) VALUES "
 )
 
 type (
@@ -95,8 +95,8 @@ func MakeMySQLCreateType(db *sql.DB) MySQLCreateType {
 		var params []interface{}
 
 		for _, t := range types {
-			inserts = append(inserts, "(?)")
-			params = append(params, t.Name)
+			inserts = append(inserts, "(?, ?)")
+			params = append(params, t.ID, t.Name)
 		}
 
 		queryVals := strings.Join(inserts, ",")

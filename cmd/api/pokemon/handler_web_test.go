@@ -26,7 +26,7 @@ func TestHTTPHandler_CreateV1_success(t *testing.T) {
 	assert.Nil(t, got)
 }
 
-func TestHTTPHandler__failsWhenBodyIsInvalid(t *testing.T) {
+func TestHTTPHandler_CreateV1_failsWhenBodyIsInvalid(t *testing.T) {
 	createPokemon := pokemon.MockMySQLCreate(nil)
 	createV1 := pokemon.CreateV1(createPokemon)
 	bodyJSON := pokemon.InvalidBody
@@ -40,7 +40,7 @@ func TestHTTPHandler__failsWhenBodyIsInvalid(t *testing.T) {
 	assert.Equal(t, got, want)
 }
 
-func TestHTTPHandler__failsWithBadRequest(t *testing.T) {
+func TestHTTPHandler_CreateV1_failsWithBadRequest(t *testing.T) {
 	createPokemon := pokemon.MockMySQLCreate(pokemon.ErrCantRunQuery)
 	createV1 := pokemon.CreateV1(createPokemon)
 	bodyJSON := pokemon.MockPokemonAsJson()
@@ -54,7 +54,7 @@ func TestHTTPHandler__failsWithBadRequest(t *testing.T) {
 	assert.Equal(t, got, want)
 }
 
-func TestHTTPHandler__failsWithInternalServerError(t *testing.T) {
+func TestHTTPHandler_CreateV1_failsWithInternalServerError(t *testing.T) {
 	createPokemon := pokemon.MockMySQLCreate(pokemon.ErrCantPrepareStatement)
 	createV1 := pokemon.CreateV1(createPokemon)
 	bodyJSON := pokemon.MockPokemonAsJson()
@@ -64,6 +64,31 @@ func TestHTTPHandler__failsWithInternalServerError(t *testing.T) {
 
 	want := web.NewError(http.StatusInternalServerError, pokemon.CantCreatePokemon)
 	got := createV1(w, r)
+
+	assert.Equal(t, got, want)
+}
+
+func TestHTTPHanldler_SearchTypesV1_success(t *testing.T) {
+	searchTypes := pokemon.MockSearchTypes(pokemon.MockTypes(), nil)
+	searchTypesV1 := pokemon.SearchTypesV1(searchTypes)
+
+	ctx, w := context.Background(), httptest.NewRecorder()
+	r, _ := http.NewRequestWithContext(ctx, http.MethodPost, "/test", nil)
+
+	got := searchTypesV1(w, r)
+
+	assert.Nil(t, got)
+}
+
+func TestHTTPHanldler_SearchTypesV1_failsWithInternalServerError(t *testing.T) {
+	searchTypes := pokemon.MockSearchTypes(pokemon.MockTypes(), pokemon.ErrCantSearchTypes)
+	searchTypesV1 := pokemon.SearchTypesV1(searchTypes)
+
+	ctx, w := context.Background(), httptest.NewRecorder()
+	r, _ := http.NewRequestWithContext(ctx, http.MethodPost, "/test", nil)
+
+	want := web.NewError(http.StatusInternalServerError, pokemon.CantGetTypes)
+	got := searchTypesV1(w, r)
 
 	assert.Equal(t, got, want)
 }
