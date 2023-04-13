@@ -12,6 +12,7 @@ type (
 	SearchTypes func(ctx context.Context) ([]Type, error)
 )
 
+// MakeSearchTypes creates a SearchTypes function
 func MakeSearchTypes(mysqlSearchTypes MySQLSearchTypes, searchPokemonTypes pokemon.SearchTypes, mysqlCreateTypes MySQLCreateType) SearchTypes {
 	return func(ctx context.Context) ([]Type, error) {
 		types, err := mysqlSearchTypes(ctx)
@@ -27,11 +28,14 @@ func MakeSearchTypes(mysqlSearchTypes MySQLSearchTypes, searchPokemonTypes pokem
 				return []Type{}, ErrCantSearchPokemonTypes
 			}
 
-			err = mysqlCreateTypes(ctx, toTypesSlice(pokemonTypes.Types))
-			if err != nil {
+			types = toTypesSlice(pokemonTypes.Types)
+
+			if err = mysqlCreateTypes(ctx, types); err != nil {
 				log.Error(ctx, err.Error())
 				return []Type{}, ErrCantSaveTypes
 			}
+
+			return types, nil
 		}
 
 		return types, nil
