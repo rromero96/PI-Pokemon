@@ -172,7 +172,53 @@
 		},
 		{
 			"name": "SearchTypesV1",
-			"item": []
+			"item": [
+				{
+					"name": "SearchTypesV1- OK",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 204\",",
+									"function(){",
+									"    pm.response.to.have.status(204)",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{localhost}}/pokemon/types/v1",
+							"host": [
+								"{{localhost}}"
+							],
+							"path": [
+								"pokemon",
+								"types",
+								"v1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
 		}
 	],
 	"event": [
