@@ -4,7 +4,7 @@ import (
 	"context"
 	"database/sql"
 
-	"github.com/rromero96/roro-lib/cmd/log"
+	"github.com/rromero96/roro-lib/log"
 )
 
 const (

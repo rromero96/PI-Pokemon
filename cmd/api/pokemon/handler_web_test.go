@@ -7,7 +7,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/rromero96/roro-lib/cmd/web"
+	"github.com/rromero96/roro-lib/web"
 	"github.com/stretchr/testify/assert"
 
 	"github.com/rromero96/PI-Pokemon/cmd/api/pokemon"
