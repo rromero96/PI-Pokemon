@@ -18,8 +18,8 @@ type (
 )
 
 const (
-	pokeApiUrl string = "https://pokeapi.co/api/v2/pokemon/%d"
-	typesUrl   string = "https://pokeapi.co/api/v2/type"
+	pokeApiUrl string = "/api/v2/pokemon/%d"
+	typesUrl   string = "/api/v2/type"
 )
 
 // MakeGetPokemons creates a new SearchPokemon function

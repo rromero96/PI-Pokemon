@@ -60,7 +60,7 @@ func TestSearchPokemons_failsWithInternalServerError(t *testing.T) {
 	getPokemons, _ := MakeSearchPokemon(restGetFunc)
 	ctx := context.Background()
 	id := 1
-	requestURL := "https://pokeapi.co/api/v2/pokemon/1"
+	requestURL := "/api/v2/pokemon/1"
 
 	want := rest.RequestError{
 		Method:          http.MethodGet,
@@ -81,7 +81,7 @@ func TestMakeSearchTypes_success(t *testing.T) {
 	assert.Nil(t, got)
 }
 
-func TestTestMakeSearchTypes_success(t *testing.T) {
+func TestSearchTypes_success(t *testing.T) {
 	restGetFunc := rest.MakeGetFuncMock(rest.NewResponse(http.StatusOK, []byte(MockTypesAsJson())))
 	getTypes, _ := MakeSearchTypes(restGetFunc)
 	ctx := context.Background()
@@ -93,7 +93,7 @@ func TestTestMakeSearchTypes_success(t *testing.T) {
 	assert.Equal(t, got, want)
 }
 
-func TestTestMakeSearchTypes_failsWithNotFound(t *testing.T) {
+func TestSearchTypes_failsWithNotFound(t *testing.T) {
 	restGetFunc := rest.MakeGetFuncMock(rest.NewResponse(http.StatusNotFound, []byte{}))
 	getTypes, _ := MakeSearchTypes(restGetFunc)
 	ctx := context.Background()
@@ -104,7 +104,7 @@ func TestTestMakeSearchTypes_failsWithNotFound(t *testing.T) {
 	assert.Equal(t, got, want)
 }
 
-func TestTestMakeSearchTypes_failsWithUnmarshalError(t *testing.T) {
+func TestSearchTypes_failsWithUnmarshalError(t *testing.T) {
 	restGetFunc := rest.MakeGetFuncMock(rest.NewResponse(http.StatusOK, []byte("InvalidBody")))
 	getTypes, _ := MakeSearchTypes(restGetFunc)
 	ctx := context.Background()
@@ -115,11 +115,11 @@ func TestTestMakeSearchTypes_failsWithUnmarshalError(t *testing.T) {
 	assert.Equal(t, got, want)
 }
 
-func TestTestMakeSearchTypes_failsWithInternalServerError(t *testing.T) {
+func TestSearchTypes_failsWithInternalServerError(t *testing.T) {
 	restGetFunc := rest.MakeGetFuncMock(rest.NewResponse(http.StatusInternalServerError, []byte("error")))
 	getTypes, _ := MakeSearchTypes(restGetFunc)
 	ctx := context.Background()
-	requestURL := "https://pokeapi.co/api/v2/type"
+	requestURL := "/api/v2/type"
 
 	want := rest.RequestError{
 		Method:          http.MethodGet,
