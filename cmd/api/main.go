@@ -5,10 +5,13 @@ import (
 	"fmt"
 	"log"
 	"net"
+	"os"
+	"path/filepath"
+	"runtime"
 	"time"
 
 	_ "github.com/go-sql-driver/mysql"
-	"github.com/rromero96/roro-lib/cmd/config"
+	"github.com/olebedev/config"
 	"github.com/rromero96/roro-lib/cmd/rest"
 	"github.com/rromero96/roro-lib/cmd/web"
 
@@ -46,9 +49,20 @@ func run() error {
 	}
 
 	/*
+	   YML Configuration
+	*/
+	file, err := os.ReadFile(getFileName("../PI-Pokemon/conf", "production.yml"))
+	if err != nil {
+		panic(err)
+	}
+	yamlString := string(file)
+
+	cfg, _ := config.ParseYaml(yamlString)
+
+	/*
 	   MYSQL client
 	*/
-	pokemonsDBClient, err := createDBClient(getDBConnectionStringRoutes(pokemonsDB))
+	pokemonsDBClient, err := createDBClient(getDBConnectionStringRoutes(pokemonsDB, cfg))
 	if err != nil {
 		return err
 	}
@@ -101,9 +115,19 @@ func createDBClient(connectionString string) (*sql.DB, error) {
 	return db, nil
 }
 
-func getDBConnectionStringRoutes(database string) string {
-	dbUsername := config.String("databases", fmt.Sprintf("mysql.%s.username", database), "")
-	dbPassword := config.String("databases", fmt.Sprintf("mysql.%s.password", database), "")
-	dbName := config.String("databases", fmt.Sprintf("mysql.%s.db_name", database), "")
-	return fmt.Sprintf(connectionStringFormat, dbUsername, dbPassword, dbName)
+func getDBConnectionStringRoutes(database string, yml *config.Config) string {
+	dbUserName, _ := yml.String(fmt.Sprintf("databases.mysql.%s.username", database))
+	dbPassword, _ := yml.String(fmt.Sprintf("databases.mysql.%s.password", database))
+	//dbHost, _ := yml.String(fmt.Sprintf("databases.mysql.%s.db_host", database))
+	dbName, _ := yml.String(fmt.Sprintf("databases.mysql.%s.db_name", database))
+	return fmt.Sprintf(connectionStringFormat, dbUserName, dbPassword /* dbHost ,*/, dbName)
+}
+
+// getFileName returns the absolute file path of a file
+func getFileName(folder string, file string) string {
+	_, filename, _, _ := runtime.Caller(0)
+	currentDir := filepath.Dir(filename)
+	rootDir := filepath.Join(currentDir, "..", "..")
+
+	return filepath.Join(rootDir, folder, file)
 }
