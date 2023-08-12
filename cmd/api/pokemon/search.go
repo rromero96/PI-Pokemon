@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/rromero96/PI-Pokemon/internal/pokemon"
-	"github.com/rromero96/roro-lib/cmd/log"
+	"github.com/rromero96/roro-lib/log"
 )
 
 type (

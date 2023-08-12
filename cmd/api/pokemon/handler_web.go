@@ -4,7 +4,7 @@ import (
 	"errors"
 	"net/http"
 
-	"github.com/rromero96/roro-lib/cmd/web"
+	"github.com/rromero96/roro-lib/web"
 )
 
 // SearchV1 performs a search to obtain all the pokemons

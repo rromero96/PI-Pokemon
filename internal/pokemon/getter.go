@@ -6,7 +6,8 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/rromero96/roro-lib/cmd/rest"
+	"github.com/rromero96/roro-lib/log"
+	"github.com/rromero96/roro-lib/rusty"
 )
 
 type (
@@ -17,58 +18,73 @@ type (
 	SearchTypes func(context.Context) (PokemonTypes, error)
 )
 
-const (
-	pokeApiUrl string = "/api/v2/pokemon/%d"
-	typesUrl   string = "/api/v2/type"
-)
-
 // MakeGetPokemons creates a new SearchPokemon function
-func MakeSearchPokemon(restGetFunc rest.GetFunc) (SearchPokemon, error) {
-	return func(ctx context.Context, ID int) (Pokemon, error) {
-		url := fmt.Sprintf(pokeApiUrl, ID)
-		response := restGetFunc(ctx, url)
+func MakeSearchPokemon(httpClient rusty.Requester) (SearchPokemon, error) {
+	const domain string = "https://pokeapi.co"
+	const path string = "/api/v2/pokemon/{id}"
 
-		switch response.StatusCode() {
+	url := rusty.URL(domain, path)
+	endpoint, err := rusty.NewEndpoint(httpClient, url)
+	if err != nil {
+		return nil, rusty.ErrCantCreateRustyEndpoint
+	}
+
+	return func(ctx context.Context, ID int) (Pokemon, error) {
+		requestOpts := []rusty.RequestOption{
+			rusty.WithParam("id", ID),
+		}
+		response, err := endpoint.Post(ctx, requestOpts...)
+		if response == nil && err != nil {
+			log.Error(ctx, ErrCantPerformGet.Error(), log.String("response error:", err.Error()))
+			return Pokemon{}, ErrCantPerformGet
+		}
+
+		switch response.StatusCode {
 		case http.StatusOK:
 			var pokemon Pokemon
-			if json.Unmarshal(response.Bytes(), &pokemon) != nil {
+			if json.Unmarshal(response.Body, &pokemon) != nil {
 				return Pokemon{}, ErrUnmarshalResponse
 			}
 			return pokemon, nil
 		case http.StatusNotFound:
 			return Pokemon{}, ErrPokemonNotFound
 		default:
-			return Pokemon{}, rest.RequestError{
-				Method:          http.MethodGet,
-				URL:             url,
-				StatusCode:      response.StatusCode(),
-				ResponsePayload: response.String(),
-			}
+			log.Error(ctx, fmt.Sprintf("Error: %s - Body: %s - StatusCode: %d", err.Error(), response.Body, response.StatusCode))
+			return Pokemon{}, ErrCantGetPokemon
 		}
 	}, nil
 }
 
 // MakeGetTypes creates a new SearchTypes function
-func MakeSearchTypes(restGetFunc rest.GetFunc) (SearchTypes, error) {
-	return func(ctx context.Context) (PokemonTypes, error) {
-		response := restGetFunc(ctx, typesUrl)
+func MakeSearchTypes(httpClient rusty.Requester) (SearchTypes, error) {
+	const domain string = "https://pokeapi.co"
+	const path string = "/api/v2/type"
 
-		switch response.StatusCode() {
+	url := rusty.URL(domain, path)
+	endpoint, err := rusty.NewEndpoint(httpClient, url)
+	if err != nil {
+		return nil, rusty.ErrCantCreateRustyEndpoint
+	}
+
+	return func(ctx context.Context) (PokemonTypes, error) {
+		response, err := endpoint.Post(ctx)
+		if response == nil && err != nil {
+			log.Error(ctx, ErrCantPerformGet.Error(), log.String("response error:", err.Error()))
+			return PokemonTypes{}, ErrCantPerformGet
+		}
+
+		switch response.StatusCode {
 		case http.StatusOK:
 			var types PokemonTypes
-			if json.Unmarshal(response.Bytes(), &types) != nil {
+			if json.Unmarshal(response.Body, &types) != nil {
 				return PokemonTypes{}, ErrUnmarshalResponse
 			}
 			return types, nil
 		case http.StatusNotFound:
 			return PokemonTypes{}, ErrTypesNotFound
 		default:
-			return PokemonTypes{}, rest.RequestError{
-				Method:          http.MethodGet,
-				URL:             typesUrl,
-				StatusCode:      response.StatusCode(),
-				ResponsePayload: response.String(),
-			}
+			log.Error(ctx, fmt.Sprintf("Error: %s - Body: %s - StatusCode: %d", err.Error(), response.Body, response.StatusCode))
+			return PokemonTypes{}, ErrCantGetTypes
 		}
 	}, nil
 }

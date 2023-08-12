@@ -12,8 +12,8 @@ import (
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/olebedev/config"
-	"github.com/rromero96/roro-lib/cmd/rest"
-	"github.com/rromero96/roro-lib/cmd/web"
+	"github.com/rromero96/roro-lib/httpclient"
+	"github.com/rromero96/roro-lib/web"
 
 	"github.com/rromero96/PI-Pokemon/cmd/api/pokemon"
 	internalPokemon "github.com/rromero96/PI-Pokemon/internal/pokemon"
@@ -68,6 +68,16 @@ func run() error {
 	}
 
 	/*
+	   HTTP client
+	*/
+	connectionTimeout := 250 * time.Millisecond
+	retries := 1
+	opts := []httpclient.OptionRetryable{
+		httpclient.WithTimeout(connectionTimeout),
+	}
+	httpClient := httpclient.NewRetryable(retries, opts...)
+
+	/*
 		Injections
 	*/
 	/*	mysql	*/
@@ -80,8 +90,7 @@ func run() error {
 	}
 
 	/*	internal	*/
-	restGetFunc := rest.MakeGetFunc("", "")
-	pokemonTypeSearch, err := internalPokemon.MakeSearchTypes(restGetFunc)
+	pokemonTypeSearch, err := internalPokemon.MakeSearchTypes(httpClient)
 	if err != nil {
 		return err
 	}
