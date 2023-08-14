@@ -2,6 +2,7 @@ package pokemon
 
 const imageDefault string = "https://pokeapi.co/api/v2/pokemon/1/"
 
+// PokemonDTO is the struct shown to the client with the pokemon data
 type PokemonDTO struct {
 	ID      *int      `json:"id,omitempty"`
 	Name    *string   `json:"name"`
@@ -16,11 +17,13 @@ type PokemonDTO struct {
 	Types   []TypeDTO `json:"types"`
 }
 
+// TypeDTO is part of PokemonDTO
 type TypeDTO struct {
 	ID   int    `json:"id,omitempty"`
 	Name string `json:"name"`
 }
 
+// validate checks that the client inputs aren't nil for pokemon creation
 func (p PokemonDTO) validate() error {
 	if p.Name == nil || p.HP == nil || p.Attack == nil || p.Defense == nil || p.Speed == nil || p.Height == nil || p.Weight == nil {
 		return ErrInvalidBody
@@ -37,6 +40,7 @@ func (p PokemonDTO) validate() error {
 	return nil
 }
 
+// validate checks that the TypeDTO data is not empty
 func (t TypeDTO) validate() error {
 	if t.Name == "" {
 		return ErrInvalidBody
@@ -45,6 +49,7 @@ func (t TypeDTO) validate() error {
 	return nil
 }
 
+// toDomain converts a PokemonDTO into Pokemon
 func (p PokemonDTO) toDomain() Pokemon {
 	id := 0
 	if p.ID != nil {
@@ -76,6 +81,7 @@ func (p PokemonDTO) toDomain() Pokemon {
 	}
 }
 
+// toTypes converts a slice of TypeDTO into a slice of Type
 func toTypes(typesDTO []TypeDTO) []Type {
 	types := make([]Type, len(typesDTO))
 	for i, v := range typesDTO {

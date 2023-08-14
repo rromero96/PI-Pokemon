@@ -24,7 +24,7 @@ func TestSearchPokemons_success(t *testing.T) {
 	id := 1
 
 	want := MockPokemon()
-	got, err := getPokemons(ctx, id)
+	got, err := getPokemons(ctx, &id, nil)
 
 	assert.Nil(t, err)
 	assert.Equal(t, got, want)
@@ -37,7 +37,7 @@ func TestSearchPokemons_failsWithNotFound(t *testing.T) {
 	id := 1
 
 	want := ErrPokemonNotFound
-	_, got := getPokemons(ctx, id)
+	_, got := getPokemons(ctx, &id, nil)
 
 	assert.Equal(t, got, want)
 }
@@ -49,7 +49,7 @@ func TestSearchPokemons_failsWithUnmarshalError(t *testing.T) {
 	id := 1
 
 	want := ErrUnmarshalResponse
-	_, got := getPokemons(ctx, id)
+	_, got := getPokemons(ctx, &id, nil)
 
 	assert.Equal(t, got, want)
 }
@@ -61,7 +61,7 @@ func TestSearchPokemons_failsWithInternalServerError(t *testing.T) {
 	id := 1
 
 	want := ErrCantGetPokemon
-	_, got := getPokemons(ctx, id)
+	_, got := getPokemons(ctx, &id, nil)
 
 	assert.Equal(t, got, want)
 }

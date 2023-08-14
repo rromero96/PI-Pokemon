@@ -6,7 +6,7 @@ import (
 
 // MockSearchPokemons mock
 func MockSearchPokemons(response Pokemon, err error) SearchPokemon {
-	return func(context.Context, int) (Pokemon, error) {
+	return func(context.Context, *int, *string) (Pokemon, error) {
 		return response, err
 	}
 }

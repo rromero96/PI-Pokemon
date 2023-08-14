@@ -8,11 +8,21 @@ import (
 )
 
 type (
+	// SearchPokemon searchs a pokemon by ID
+	SearchPokemonByID func(ctx context.Context, ID int) (Pokemon, error)
+
 	// SearchTypes search the pokemon types in the db, if there are not existent, it looks for them in the pokeapi and saves them in the db
 	SearchTypes func(ctx context.Context) ([]Type, error)
 )
 
-// MakeSearchTypes creates a SearchTypes function
+// MakeSearchPokemonByID creates a new SearchPokemonById function
+func MakeSearchPokemonByID() SearchPokemonByID {
+	return func(ctx context.Context, ID int) (Pokemon, error) {
+		return Pokemon{}, nil
+	}
+}
+
+// MakeSearchTypes creates a new SearchTypes function
 func MakeSearchTypes(mysqlSearchTypes MySQLSearchTypes, searchPokemonTypes pokemon.SearchTypes, mysqlCreateTypes MySQLCreateType) SearchTypes {
 	return func(ctx context.Context) ([]Type, error) {
 		types, err := mysqlSearchTypes(ctx)

@@ -4,6 +4,7 @@ import (
 	"github.com/rromero96/PI-Pokemon/internal/pokemon"
 )
 
+// Pokemon contains the pokemon data
 type Pokemon struct {
 	ID      int
 	Name    string
@@ -18,11 +19,13 @@ type Pokemon struct {
 	Types   []Type
 }
 
+// Type is part of pokemon
 type Type struct {
 	ID   int
 	Name string
 }
 
+// toDTO converts a pokemon to a pokemonDTO
 func (p Pokemon) toDTO() PokemonDTO {
 	return PokemonDTO{
 		ID:      &p.ID,
@@ -39,6 +42,7 @@ func (p Pokemon) toDTO() PokemonDTO {
 	}
 }
 
+// toTypesDto converts a slice of type to a slice of typeDTO
 func toTypesDTO(types []Type) []TypeDTO {
 	typesDTO := make([]TypeDTO, len(types))
 	for i, v := range types {
@@ -48,6 +52,7 @@ func toTypesDTO(types []Type) []TypeDTO {
 	return typesDTO
 }
 
+// toTypesSlice converts a slice of pokemon.types to a slice of type
 func toTypesSlice(pokemonTypes []pokemon.Type) []Type {
 	types := make([]Type, len(pokemonTypes))
 	for i, v := range pokemonTypes {

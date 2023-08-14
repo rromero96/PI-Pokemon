@@ -9,12 +9,6 @@ import (
 	"github.com/rromero96/roro-lib/log"
 )
 
-const (
-	queryCreate     string = "INSERT INTO pokemon (id, name, hp, attack, defense, image, speed, height, weight, created) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
-	queryAdd        string = "INSERT INTO pokemon_type (pokemon_id, type_name) VALUES "
-	queryCreateType string = "INSERT INTO type (id, name) VALUES "
-)
-
 type (
 	// MySQLCreate serves to create a new row into "pokemons" schema
 	MySQLCreate func(ctx context.Context, pokemon Pokemon) error
@@ -28,8 +22,9 @@ type (
 
 // MakeMySQLCreate creates a new MySQLCreate
 func MakeMySQLCreate(db *sql.DB, addTypes MySQLAdd) MySQLCreate {
+	var query string = "INSERT INTO pokemon (id, name, hp, attack, defense, image, speed, height, weight, created) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
 	return func(ctx context.Context, pokemon Pokemon) error {
-		stmt, err := db.PrepareContext(ctx, queryCreate)
+		stmt, err := db.PrepareContext(ctx, query)
 		if err != nil {
 			log.Error(ctx, err.Error())
 			return ErrCantPrepareStatement
@@ -60,6 +55,7 @@ func MakeMySQLCreate(db *sql.DB, addTypes MySQLAdd) MySQLCreate {
 // MakeMySQLAdd creates a new MySQLAdd
 func MakeMySQLAdd(db *sql.DB) MySQLAdd {
 	return func(ctx context.Context, ID int, types []Type) error {
+		var query string = "INSERT INTO pokemon_type (pokemon_id, type_name) VALUES "
 		var inserts []string
 		var params []interface{}
 
@@ -69,7 +65,7 @@ func MakeMySQLAdd(db *sql.DB) MySQLAdd {
 		}
 
 		queryVals := strings.Join(inserts, ",")
-		query := queryAdd + queryVals
+		query = query + queryVals
 
 		stmt, err := db.PrepareContext(ctx, query)
 		if err != nil {
@@ -91,6 +87,7 @@ func MakeMySQLAdd(db *sql.DB) MySQLAdd {
 // MakeMySQLCreateType creates a new MySQLCreateType
 func MakeMySQLCreateType(db *sql.DB) MySQLCreateType {
 	return func(ctx context.Context, types []Type) error {
+		var query string = "INSERT INTO type (id, name) VALUES "
 		var inserts []string
 		var params []interface{}
 
@@ -100,7 +97,7 @@ func MakeMySQLCreateType(db *sql.DB) MySQLCreateType {
 		}
 
 		queryVals := strings.Join(inserts, ",")
-		query := queryCreateType + queryVals
+		query = query + queryVals
 
 		stmt, err := db.PrepareContext(ctx, query)
 		if err != nil {
