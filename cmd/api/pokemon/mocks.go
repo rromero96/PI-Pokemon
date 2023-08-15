@@ -44,15 +44,15 @@ func MockSearchTypes(res []Type, err error) SearchTypes {
 func MockPokemonAsJson() string {
 	return fmt.Sprintf(`
 	{
-		"id": 25,
-		"name": "pikachu",
-		"hp": 35,
-		"attack": 55,
-		"defense": 40,
-		"image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/dream-world/25.svg",
-		"speed": 90,
-		"height": 4,
-		"weight": 60,
+		"id": 1,
+		"name": "bulbasaur",
+		"hp": 100,
+		"attack": 100,
+		"defense": 100,
+		"image": "image",
+		"speed": 100,
+		"height": 100,
+		"weight": 100,
 		"types" : %v
 	}
 	`, MockTypesAsJson())
@@ -61,15 +61,15 @@ func MockPokemonAsJson() string {
 // MockPokemon mock
 func MockPokemon() Pokemon {
 	return Pokemon{
-		ID:      25,
-		Name:    "pikachu",
-		HP:      35,
-		Attack:  55,
-		Defense: 40,
-		Image:   "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/dream-world/25.svg",
-		Speed:   90,
-		Height:  4,
-		Weight:  60,
+		ID:      1,
+		Name:    "bulbasaur",
+		HP:      100,
+		Attack:  100,
+		Defense: 100,
+		Image:   "image",
+		Speed:   100,
+		Height:  100,
+		Weight:  100,
 		Types:   MockTypes(),
 	}
 }
@@ -83,7 +83,10 @@ func MockPokemonDTO() PokemonDTO {
 func MockTypes() []Type {
 	return []Type{
 		{
-			Name: "electric",
+			Name: "grass",
+		},
+		{
+			Name: "poison",
 		},
 	}
 }
@@ -98,7 +101,10 @@ func MockTypesAsJson() string {
 	return `
 	[
 		{
-			"name": "electric"
+			"name": "grass"
+		},
+		{
+			"name": "poison"
 		}
 	]
 	`

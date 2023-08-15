@@ -24,7 +24,6 @@ const (
 	pokemonsSearchTypesV1 string = "/pokemons/types/v1"
 	pokemonCreateV1       string = "/pokemon/v1"
 	pokemonSearchByIDV1   string = "/pokemon/id/{pokemon_id}/v1"
-	pokemonSearchByNameV1 string = "/pokemon/name/{pokemon_name}/v1"
 
 	// connectionStringFormat when its deployed needs to have the host next to @tcp, check https://github.com/go-sql-driver/mysql/
 	connectionStringFormat string = "%s:%s@tcp/%s?charset=utf8&parseTime=true"

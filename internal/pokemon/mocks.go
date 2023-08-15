@@ -22,13 +22,13 @@ func MockSearchTypes(response PokemonTypes, err error) SearchTypes {
 func MockPokemonAsJson() string {
 	return `
 	{
-		"name": "pikachu",
-		"id": 25,
-		"height": 4,
-		"weight": 60,
+		"name": "bulbasaur",
+		"id": 1,
+		"height": 100,
+		"weight": 100,
 		"stats": [
         {
-            "base_stat": 35,
+            "base_stat": 100,
             "stat": {
                 "name": "hp"
             }
@@ -37,14 +37,19 @@ func MockPokemonAsJson() string {
 		"types": [
 			{
 				"type": {
-					"name": "electric"
+					"name": "grass"
+				}
+			},
+			{
+				"type": {
+					"name": "poison"
 				}
 			}
 		],
 		"sprites": {
             "other": {
                 "dream_world": {
-                "front_default": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/dream-world/25.svg"
+                "front_default": "image"
                  }
             }
         }
@@ -55,27 +60,27 @@ func MockPokemonAsJson() string {
 // MockPokemon mock
 func MockPokemon() Pokemon {
 	return Pokemon{
-		ID:     25,
-		Name:   "pikachu",
-		Height: 4,
-		Weight: 60,
+		ID:     1,
+		Name:   "bulbasaur",
+		Height: 100,
+		Weight: 100,
 		Sprites: Sprites{
 			Other: Other{
 				DreamWorld: DreamWorld{
-					FrontDefault: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/dream-world/25.svg",
+					FrontDefault: "image",
 				},
 			},
 		},
 		Stats: []Stats{{
-			BaseStat: 35,
+			BaseStat: 100,
 			Stat: Stat{
 				Name: "hp",
 			},
 		}},
 		Types: []Types{{
-			Type: Type{
-				Name: "electric",
-			},
+			Type: Type{Name: "grass"},
+		}, {
+			Type: Type{Name: "poison"},
 		}},
 	}
 }
@@ -86,8 +91,11 @@ func MockTypesAsJson() string {
 	{
 		"results": [
              {
-                 "name": "electric"
-             }
+                 "name": "grass"
+             },
+			 {
+				"name": "poison"
+			 }
          ]
 	}
 	`
@@ -97,7 +105,9 @@ func MockTypesAsJson() string {
 func MockTypes() PokemonTypes {
 	return PokemonTypes{
 		Types: []Type{{
-			Name: "electric",
+			Name: "grass",
+		}, {
+			Name: "poison",
 		}},
 	}
 }

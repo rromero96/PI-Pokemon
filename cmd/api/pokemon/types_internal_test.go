@@ -29,6 +29,7 @@ func TestToTypesSlice_success(t *testing.T) {
 	pokemonTypes := pokemon.MockTypes()
 	types := MockTypes()
 	types[0].ID = 1
+	types[1].ID = 2
 
 	want := types
 	got := toTypesSlice(pokemonTypes.Types)

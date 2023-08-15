@@ -3,12 +3,9 @@ package pokemon
 import (
 	"context"
 	"database/sql"
-	"fmt"
 
 	"github.com/rromero96/roro-lib/log"
 )
-
-const ()
 
 type (
 	// MYSQLSearchPokemonByID performs a SELECT into pokemons database to seek a pokemon by ID
@@ -19,13 +16,13 @@ type (
 )
 
 // MakeMySQLSearchPokemonByID creates a new MySQLSearchPokemonByID function
-func MakeMySQLSearchPokemonByID(db *sql.DB) MySQLSearchPokemonByID {
+func MakeMySQLSearchPokemonByID(db *sql.DB) (MySQLSearchPokemonByID, error) {
 	return func(ctx context.Context, ID int) (Pokemon, error) {
-		var query string = fmt.Sprintf(`SELECT id, name, hp, attack, defense, image, speed, height, weight, created, 
+		const query string = `SELECT id, name, hp, attack, defense, image, speed, height, weight, created, 
 		(SELECT type_name FROM pokemon_type WHERE pokemon_id = id ORDER BY type_name LIMIT 1) AS type_1,
 		(SELECT type_name FROM pokemon_type WHERE pokemon_id = id ORDER BY type_name LIMIT 1,1) AS type_2
 		FROM pokemon
-		WHERE id = %d;`, ID)
+		WHERE id = ?`
 
 		stmt, err := db.PrepareContext(ctx, query)
 		if err != nil {
@@ -34,7 +31,7 @@ func MakeMySQLSearchPokemonByID(db *sql.DB) MySQLSearchPokemonByID {
 		}
 		defer stmt.Close()
 
-		rows, err := stmt.QueryContext(ctx)
+		rows, err := stmt.QueryContext(ctx, ID)
 		if err != nil {
 			log.Error(ctx, err.Error())
 			return Pokemon{}, ErrCantRunQuery
@@ -48,7 +45,14 @@ func MakeMySQLSearchPokemonByID(db *sql.DB) MySQLSearchPokemonByID {
 				log.Error(ctx, err.Error())
 				return Pokemon{}, ErrCantScanRowResult
 			}
-			pokemon.Types = append(pokemon.Types, Type{Name: type1.String}, Type{Name: type2.String})
+
+			if type1.Valid {
+				pokemon.Types = append(pokemon.Types, Type{Name: type1.String})
+			}
+
+			if type2.Valid {
+				pokemon.Types = append(pokemon.Types, Type{Name: type2.String})
+			}
 		}
 		if err := rows.Err(); err != nil {
 			log.Error(ctx, err.Error())
@@ -56,13 +60,13 @@ func MakeMySQLSearchPokemonByID(db *sql.DB) MySQLSearchPokemonByID {
 		}
 
 		return pokemon, nil
-	}
+	}, nil
 }
 
 // MakeMySQLSearchTypes creates a new MySQLSearchTypes function
 func MakeMySQLSearchTypes(db *sql.DB) (MySQLSearchTypes, error) {
 	return func(ctx context.Context) ([]Type, error) {
-		var query string = "SELECT id, name FROM type ORDER BY id ASC"
+		const query string = "SELECT id, name FROM type ORDER BY id ASC"
 
 		stmt, err := db.PrepareContext(ctx, query)
 		if err != nil {

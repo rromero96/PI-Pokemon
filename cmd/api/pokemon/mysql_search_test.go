@@ -11,13 +11,14 @@ import (
 )
 
 const (
-	querySearchTypesMock string = "SELECT id, name FROM type ORDER BY id ASC"
+	querySearchTypesMock       string = "SELECT id, name FROM type ORDER BY id ASC"
+	querySearchPokemonByIDMock string = "SELECT id, name, hp, attack, defense, image, speed, height, weight, created, \\(SELECT type_name FROM pokemon_type WHERE pokemon_id = id ORDER BY type_name LIMIT 1\\) AS type_1, \\(SELECT type_name FROM pokemon_type WHERE pokemon_id = id ORDER BY type_name LIMIT 1,1\\) AS type_2 FROM pokemon WHERE id = ?"
 )
 
 func TestMakeMySQLSearchType_success(t *testing.T) {
 	db, mock, _ := sqlmock.New()
 	mock.ExpectPrepare(querySearchTypesMock)
-	id, name := 1, "electric"
+	id, name := 1, "grass"
 
 	rows := sqlmock.NewRows([]string{"id", "name"}).AddRow(id, name)
 	mock.ExpectQuery(querySearchTypesMock).WillReturnRows(rows)
@@ -31,13 +32,13 @@ func TestMakeMySQLSearchType_success(t *testing.T) {
 func TestMySQLSearchType_success(t *testing.T) {
 	db, mock, _ := sqlmock.New()
 	mock.ExpectPrepare(querySearchTypesMock)
-	id, name := 1, "electric"
+	id, name := 1, "grass"
 
 	rows := sqlmock.NewRows([]string{"id", "name"}).AddRow(id, name)
 	mock.ExpectQuery(querySearchTypesMock).WillReturnRows(rows)
 	mysqlSearchType, _ := pokemon.MakeMySQLSearchTypes(db)
 	ctx := context.Background()
-	types := pokemon.MockTypes()
+	types := []pokemon.Type{pokemon.MockTypes()[0]}
 	types[0].ID = 1
 
 	want := types
@@ -51,7 +52,7 @@ func TestMySQLSearchType_success(t *testing.T) {
 func TestMySQLSearchType_failsWhenCantPrepareStatement(t *testing.T) {
 	db, mock, _ := sqlmock.New()
 	mock.ExpectPrepare(pokemon.ErrCantPrepareStatement.Error())
-	id, name := 1, "electric"
+	id, name := 1, "grass"
 
 	rows := sqlmock.NewRows([]string{"id", "name"}).AddRow(id, name)
 	mock.ExpectQuery(querySearchTypesMock).WillReturnRows(rows)
@@ -67,7 +68,7 @@ func TestMySQLSearchType_failsWhenCantPrepareStatement(t *testing.T) {
 func TestMySQLSearchType_failsWhenCantRunQuery(t *testing.T) {
 	db, mock, _ := sqlmock.New()
 	mock.ExpectPrepare(querySearchTypesMock)
-	id, name := 1, "electric"
+	id, name := 1, "grass"
 
 	rows := sqlmock.NewRows([]string{"id", "name"}).AddRow(id, name)
 	mock.ExpectQuery(pokemon.ErrCantRunQuery.Error()).WillReturnRows(rows)
@@ -98,7 +99,7 @@ func TestMySQLSearchType_failsWhenCantScanRowResult(t *testing.T) {
 func TestMySQLSearchType_failsWhenRowResultHasError(t *testing.T) {
 	db, mock, _ := sqlmock.New()
 	mock.ExpectPrepare(querySearchTypesMock)
-	id, name := 1, "electric"
+	id, name := 1, "grass"
 
 	rows := sqlmock.NewRows([]string{"id", "name"}).AddRow(id, name).RowError(0, errors.New("some error"))
 	mock.ExpectQuery(querySearchTypesMock).WillReturnRows(rows)
@@ -107,6 +108,102 @@ func TestMySQLSearchType_failsWhenRowResultHasError(t *testing.T) {
 
 	want := pokemon.ErrCantReadRows
 	_, got := mysqlSearchType(ctx)
+
+	assert.Equal(t, want, got)
+}
+
+func TestMakeMySQLSearchPokemonByID_success(t *testing.T) {
+	db, mock, _ := sqlmock.New()
+	mock.ExpectPrepare(querySearchPokemonByIDMock)
+	id, name, hp, attack, defense, image, speed, height, weight, created, type_1, type_2 := 1, "bulbasaur", 100, 100, 100, "image", 100, 100, 100, false, "grass", "poison"
+
+	rows := sqlmock.NewRows([]string{"id", "name", "hp", "attack", "defense", "image", "speed", "height", "weight", "created", "type_1", "type_2"}).AddRow(id, name, hp, attack, defense, image, speed, height, weight, created, type_1, type_2)
+	mock.ExpectQuery(querySearchPokemonByIDMock).WillReturnRows(rows)
+
+	got, err := pokemon.MakeMySQLSearchPokemonByID(db)
+
+	assert.Nil(t, err)
+	assert.NotNil(t, got)
+}
+
+func TestMySQLSearchPokemonByID_success(t *testing.T) {
+	db, mock, _ := sqlmock.New()
+	mock.ExpectPrepare(querySearchPokemonByIDMock)
+	id, name, hp, attack, defense, image, speed, height, weight, created, type_1, type_2 := 1, "bulbasaur", 100, 100, 100, "image", 100, 100, 100, false, "grass", "poison"
+
+	rows := sqlmock.NewRows([]string{"id", "name", "hp", "attack", "defense", "image", "speed", "height", "weight", "created", "type_1", "type_2"}).AddRow(id, name, hp, attack, defense, image, speed, height, weight, created, type_1, type_2)
+	mock.ExpectQuery(querySearchPokemonByIDMock).WillReturnRows(rows)
+	mysqlSearchPokemonByID, _ := pokemon.MakeMySQLSearchPokemonByID(db)
+	ctx := context.Background()
+
+	want := pokemon.MockPokemon()
+	got, err := mysqlSearchPokemonByID(ctx, id)
+
+	assert.Nil(t, err)
+	assert.NotNil(t, got)
+	assert.Equal(t, want, got)
+}
+
+func TestMySQLSearchPokemonByID_failsWhenCantPrepareStatement(t *testing.T) {
+	db, mock, _ := sqlmock.New()
+	mock.ExpectPrepare(pokemon.ErrCantPrepareStatement.Error())
+	id, name, hp, attack, defense, image, speed, height, weight, created, type_1, type_2 := 1, "bulbasaur", 100, 100, 100, "image", 100, 100, 100, false, "grass", "poison"
+
+	rows := sqlmock.NewRows([]string{"id", "name", "hp", "attack", "defense", "image", "speed", "height", "weight", "created", "type_1", "type_2"}).AddRow(id, name, hp, attack, defense, image, speed, height, weight, created, type_1, type_2)
+	mock.ExpectQuery(querySearchPokemonByIDMock).WillReturnRows(rows)
+	mysqlSearchPokemonByID, _ := pokemon.MakeMySQLSearchPokemonByID(db)
+	ctx := context.Background()
+
+	want := pokemon.ErrCantPrepareStatement
+	_, got := mysqlSearchPokemonByID(ctx, id)
+
+	assert.Equal(t, want, got)
+}
+
+func TestMySQLSearchPokemonByID_failsWhenCantRunQuery(t *testing.T) {
+	db, mock, _ := sqlmock.New()
+	mock.ExpectPrepare(querySearchPokemonByIDMock)
+	id, name, hp, attack, defense, image, speed, height, weight, created, type_1, type_2 := 1, "bulbasaur", 100, 100, 100, "image", 100, 100, 100, false, "grass", "poison"
+
+	rows := sqlmock.NewRows([]string{"id", "name", "hp", "attack", "defense", "image", "speed", "height", "weight", "created", "type_1", "type_2"}).AddRow(id, name, hp, attack, defense, image, speed, height, weight, created, type_1, type_2)
+	mock.ExpectQuery(pokemon.ErrCantRunQuery.Error()).WillReturnRows(rows)
+	mysqlSearchPokemonByID, _ := pokemon.MakeMySQLSearchPokemonByID(db)
+	ctx := context.Background()
+
+	want := pokemon.ErrCantRunQuery
+	_, got := mysqlSearchPokemonByID(ctx, id)
+
+	assert.Equal(t, want, got)
+}
+
+func TestMySQLSearchPokemonByID_failsWhenCantScanRowResult(t *testing.T) {
+	db, mock, _ := sqlmock.New()
+	mock.ExpectPrepare(querySearchPokemonByIDMock)
+	id := 1
+
+	rows := sqlmock.NewRows([]string{"invalid column list"}).AddRow("some value")
+	mock.ExpectQuery(querySearchPokemonByIDMock).WillReturnRows(rows)
+	mysqlSearchPokemonByID, _ := pokemon.MakeMySQLSearchPokemonByID(db)
+	ctx := context.Background()
+
+	want := pokemon.ErrCantScanRowResult
+	_, got := mysqlSearchPokemonByID(ctx, id)
+
+	assert.Equal(t, want, got)
+}
+
+func TestMySQLSearchPokemonByID_failsWhenRowResultHasError(t *testing.T) {
+	db, mock, _ := sqlmock.New()
+	mock.ExpectPrepare(querySearchPokemonByIDMock)
+	id, name, hp, attack, defense, image, speed, height, weight, created, type_1, type_2 := 1, "bulbasaur", 100, 100, 100, "image", 100, 100, 100, false, "grass", "poison"
+
+	rows := sqlmock.NewRows([]string{"id", "name", "hp", "attack", "defense", "image", "speed", "height", "weight", "created", "type_1", "type_2"}).AddRow(id, name, hp, attack, defense, image, speed, height, weight, created, type_1, type_2).RowError(0, errors.New("some error"))
+	mock.ExpectQuery(querySearchPokemonByIDMock).WillReturnRows(rows)
+	mysqlSearchPokemonByID, _ := pokemon.MakeMySQLSearchPokemonByID(db)
+	ctx := context.Background()
+
+	want := pokemon.ErrCantReadRows
+	_, got := mysqlSearchPokemonByID(ctx, id)
 
 	assert.Equal(t, want, got)
 }

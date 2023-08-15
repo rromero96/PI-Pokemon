@@ -21,13 +21,6 @@ func SearchByIDV1() web.Handler {
 	}
 }
 
-// SearchVByNameV1 performs a search to obtain a pokemon by ID
-func SearchByNameV1() web.Handler {
-	return func(w http.ResponseWriter, r *http.Request) error {
-		return nil
-	}
-}
-
 // CreateV1 perfoms a pokemon creation
 func CreateV1(createPokemon MySQLCreate) web.Handler {
 	return func(w http.ResponseWriter, r *http.Request) error {
