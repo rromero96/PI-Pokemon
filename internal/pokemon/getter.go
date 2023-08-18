@@ -11,8 +11,8 @@ import (
 )
 
 type (
-	// SearchPokemon retrieves a Pokemon by id.
-	SearchPokemon func(context.Context, int) (Pokemon, error)
+	// SearchPokemon retrieves a Pokemon by id or name
+	SearchPokemon func(context.Context, *int, *string) (Pokemon, error)
 
 	// SearchTypes retrieves the pokemon types
 	SearchTypes func(context.Context) (PokemonTypes, error)
@@ -21,7 +21,7 @@ type (
 // MakeGetPokemons creates a new SearchPokemon function
 func MakeSearchPokemon(httpClient rusty.Requester) (SearchPokemon, error) {
 	const domain string = "https://pokeapi.co"
-	const path string = "/api/v2/pokemon/{id}"
+	const path string = "/api/v2/pokemon/{key}"
 
 	url := rusty.URL(domain, path)
 	endpoint, err := rusty.NewEndpoint(httpClient, url)
@@ -29,10 +29,16 @@ func MakeSearchPokemon(httpClient rusty.Requester) (SearchPokemon, error) {
 		return nil, rusty.ErrCantCreateRustyEndpoint
 	}
 
-	return func(ctx context.Context, ID int) (Pokemon, error) {
-		requestOpts := []rusty.RequestOption{
-			rusty.WithParam("id", ID),
+	return func(ctx context.Context, ID *int, Name *string) (Pokemon, error) {
+		var requestOpts []rusty.RequestOption
+		if ID != nil {
+			requestOpts = append(requestOpts, rusty.WithParam("key", *ID))
 		}
+
+		if Name != nil {
+			requestOpts = append(requestOpts, rusty.WithParam("key", *Name))
+		}
+
 		response, err := endpoint.Post(ctx, requestOpts...)
 		if response == nil && err != nil {
 			log.Error(ctx, ErrCantPerformGet.Error(), log.String("response error:", err.Error()))

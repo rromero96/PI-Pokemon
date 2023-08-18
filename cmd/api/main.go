@@ -23,7 +23,7 @@ const (
 	pokemonsSearchV1      string = "/pokemons/v1"
 	pokemonsSearchTypesV1 string = "/pokemons/types/v1"
 	pokemonCreateV1       string = "/pokemon/v1"
-	pokemonSearchByIDV1   string = "/pokemon/{pokemon_id}/v1"
+	pokemonSearchByIDV1   string = "/pokemon/id/{pokemon_id}/v1"
 
 	// connectionStringFormat when its deployed needs to have the host next to @tcp, check https://github.com/go-sql-driver/mysql/
 	connectionStringFormat string = "%s:%s@tcp/%s?charset=utf8&parseTime=true"
@@ -83,6 +83,7 @@ func run() error {
 	/*	mysql	*/
 	addTypes := pokemon.MakeMySQLAdd(pokemonsDBClient)
 	mysqlCreatePokemon := pokemon.MakeMySQLCreate(pokemonsDBClient, addTypes)
+	//mysqlSearchPokemonByID := pokemon.MakeMySQLSearchPokemonByID(pokemonsDBClient)
 	mysqlCreateTypes := pokemon.MakeMySQLCreateType(pokemonsDBClient)
 	mysqlSearchTypes, err := pokemon.MakeMySQLSearchTypes(pokemonsDBClient)
 	if err != nil {
