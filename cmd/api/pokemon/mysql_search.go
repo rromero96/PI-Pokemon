@@ -8,15 +8,15 @@ import (
 )
 
 type (
-	// MYSQLSearchPokemonByID performs a SELECT into pokemons database to seek a pokemon by ID
-	MySQLSearchPokemonByID func(ctx context.Context, ID int) (Pokemon, error)
+	// MYSQLSearchByID performs a SELECT into pokemons database to seek a pokemon by ID
+	MySQLSearchByID func(ctx context.Context, ID int) (Pokemon, error)
 
 	// MYSQLSearchTypes performs a SELECT into pokemons database to seek the pokemon types
 	MySQLSearchTypes func(ctx context.Context) ([]Type, error)
 )
 
-// MakeMySQLSearchPokemonByID creates a new MySQLSearchPokemonByID function
-func MakeMySQLSearchPokemonByID(db *sql.DB) (MySQLSearchPokemonByID, error) {
+// MakeMySQLSearchByID creates a new MySQLSearchByID function
+func MakeMySQLSearchByID(db *sql.DB) (MySQLSearchByID, error) {
 	return func(ctx context.Context, ID int) (Pokemon, error) {
 		const query string = `SELECT id, name, hp, attack, defense, image, speed, height, weight, created, 
 		(SELECT type_name FROM pokemon_type WHERE pokemon_id = id ORDER BY type_name LIMIT 1) AS type_1,

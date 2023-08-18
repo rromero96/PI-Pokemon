@@ -4,8 +4,8 @@ import (
 	"context"
 )
 
-// MockSearchPokemons mock
-func MockSearchPokemons(response Pokemon, err error) SearchPokemon {
+// MockSearch mock
+func MockSearch(response Pokemon, err error) Search {
 	return func(context.Context, *int, *string) (Pokemon, error) {
 		return response, err
 	}
