@@ -36,3 +36,21 @@ func TestToTypesSlice_success(t *testing.T) {
 
 	assert.Equal(t, got, want)
 }
+
+func TestToPokemon_success(t *testing.T) {
+	pokemon := pokemon.MockPokemon()
+
+	want := MockPokemon()
+	got := toPokemon(pokemon)
+
+	assert.Equal(t, got, want)
+}
+
+func TestToType_success(t *testing.T) {
+	types := pokemon.MockPokemon().Types
+
+	want := MockPokemon().Types
+	got := toType(types)
+
+	assert.Equal(t, got, want)
+}

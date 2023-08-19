@@ -4,8 +4,8 @@ import (
 	"context"
 )
 
-// MockSearchPokemons mock
-func MockSearchPokemons(response Pokemon, err error) SearchPokemon {
+// MockSearch mock
+func MockSearch(response Pokemon, err error) Search {
 	return func(context.Context, *int, *string) (Pokemon, error) {
 		return response, err
 	}
@@ -31,6 +31,36 @@ func MockPokemonAsJson() string {
             "base_stat": 100,
             "stat": {
                 "name": "hp"
+            }
+        },
+		{
+            "base_stat": 100,
+            "stat": {
+                "name": "attack"
+            }
+        },
+		{
+            "base_stat": 100,
+            "stat": {
+                "name": "defense"
+            }
+        },
+		{
+            "base_stat": 100,
+            "stat": {
+                "name": "special-attack"
+            }
+        },
+		{
+            "base_stat": 100,
+            "stat": {
+                "name": "special-defense"
+            }
+        },
+		{
+            "base_stat": 100,
+            "stat": {
+                "name": "speed"
             }
         }
         ],
@@ -71,12 +101,32 @@ func MockPokemon() Pokemon {
 				},
 			},
 		},
-		Stats: []Stats{{
-			BaseStat: 100,
-			Stat: Stat{
-				Name: "hp",
+		Stats: []Stats{
+			{
+				BaseStat: 100,
+				Stat:     Stat{Name: "hp"},
 			},
-		}},
+			{
+				BaseStat: 100,
+				Stat:     Stat{Name: "attack"},
+			},
+			{
+				BaseStat: 100,
+				Stat:     Stat{Name: "defense"},
+			},
+			{
+				BaseStat: 100,
+				Stat:     Stat{Name: "special-attack"},
+			},
+			{
+				BaseStat: 100,
+				Stat:     Stat{Name: "special-defense"},
+			},
+			{
+				BaseStat: 100,
+				Stat:     Stat{Name: "speed"},
+			},
+		},
 		Types: []Types{{
 			Type: Type{Name: "grass"},
 		}, {

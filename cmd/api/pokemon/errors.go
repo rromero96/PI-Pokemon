@@ -12,6 +12,9 @@ var (
 	ErrCantGetLastID          = errors.New("can't get last id")
 	ErrCantSearchTypes        = errors.New("can't search types")
 	ErrCantSearchPokemonTypes = errors.New("can't search pokemon types")
+	ErrCantSearchPokemon      = errors.New("can't search pokemon")
+	ErrCantSearchPokemonApi   = errors.New("can't search pokemon api")
+	ErrCantCreatePokemon      = errors.New(CantCreatePokemon)
 	ErrCantSaveTypes          = errors.New("can't save types")
 )
 

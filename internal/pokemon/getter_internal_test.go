@@ -9,59 +9,59 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestMakeSearchPokemons_success(t *testing.T) {
+func TestMakeSearch_success(t *testing.T) {
 	mockRequester := rusty.RequesterResponseMock{Body: "", Error: nil, StatusCode: http.StatusOK}
 
-	_, got := MakeSearchPokemon(mockRequester)
+	_, got := MakeSearch(mockRequester)
 
 	assert.Nil(t, got)
 }
 
-func TestSearchPokemons_success(t *testing.T) {
+func TestSearch_success(t *testing.T) {
 	mockRequester := rusty.RequesterResponseMock{Body: MockPokemonAsJson(), Error: nil, StatusCode: http.StatusOK}
-	getPokemons, _ := MakeSearchPokemon(mockRequester)
+	search, _ := MakeSearch(mockRequester)
 	ctx := context.Background()
 	id := 1
 
 	want := MockPokemon()
-	got, err := getPokemons(ctx, &id, nil)
+	got, err := search(ctx, &id, nil)
 
 	assert.Nil(t, err)
 	assert.Equal(t, got, want)
 }
 
-func TestSearchPokemons_failsWithNotFound(t *testing.T) {
+func TestSearch_failsWithNotFound(t *testing.T) {
 	mockRequester := rusty.RequesterResponseMock{Body: "", Error: nil, StatusCode: http.StatusNotFound}
-	getPokemons, _ := MakeSearchPokemon(mockRequester)
+	search, _ := MakeSearch(mockRequester)
 	ctx := context.Background()
 	id := 1
 
 	want := ErrPokemonNotFound
-	_, got := getPokemons(ctx, &id, nil)
+	_, got := search(ctx, &id, nil)
 
 	assert.Equal(t, got, want)
 }
 
-func TestSearchPokemons_failsWithUnmarshalError(t *testing.T) {
+func TestSearch_failsWithUnmarshalError(t *testing.T) {
 	mockRequester := rusty.RequesterResponseMock{Body: `{"error"}`, Error: nil, StatusCode: http.StatusOK}
-	getPokemons, _ := MakeSearchPokemon(mockRequester)
+	search, _ := MakeSearch(mockRequester)
 	ctx := context.Background()
 	id := 1
 
 	want := ErrUnmarshalResponse
-	_, got := getPokemons(ctx, &id, nil)
+	_, got := search(ctx, &id, nil)
 
 	assert.Equal(t, got, want)
 }
 
-func TestSearchPokemons_failsWithInternalServerError(t *testing.T) {
+func TestSearch_failsWithInternalServerError(t *testing.T) {
 	mockRequester := rusty.RequesterResponseMock{Body: "error", Error: nil, StatusCode: http.StatusInternalServerError}
-	getPokemons, _ := MakeSearchPokemon(mockRequester)
+	search, _ := MakeSearch(mockRequester)
 	ctx := context.Background()
 	id := 1
 
 	want := ErrCantGetPokemon
-	_, got := getPokemons(ctx, &id, nil)
+	_, got := search(ctx, &id, nil)
 
 	assert.Equal(t, got, want)
 }

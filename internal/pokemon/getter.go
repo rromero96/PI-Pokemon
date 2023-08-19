@@ -11,15 +11,15 @@ import (
 )
 
 type (
-	// SearchPokemon retrieves a Pokemon by id or name
-	SearchPokemon func(context.Context, *int, *string) (Pokemon, error)
+	// Search retrieves a Pokemon by id or name
+	Search func(context.Context, *int, *string) (Pokemon, error)
 
 	// SearchTypes retrieves the pokemon types
 	SearchTypes func(context.Context) (PokemonTypes, error)
 )
 
-// MakeGetPokemons creates a new SearchPokemon function
-func MakeSearchPokemon(httpClient rusty.Requester) (SearchPokemon, error) {
+// MakeSearch creates a new Search function
+func MakeSearch(httpClient rusty.Requester) (Search, error) {
 	const domain string = "https://pokeapi.co"
 	const path string = "/api/v2/pokemon/{key}"
 
