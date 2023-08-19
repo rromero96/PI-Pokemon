@@ -12,6 +12,13 @@ func MockMySQLCreate(err error) MySQLCreate {
 	}
 }
 
+// MockMySQLSearchByID mock
+func MockMySQLSearchByID(pokemon Pokemon, err error) MySQLSearchByID {
+	return func(context.Context, int) (Pokemon, error) {
+		return pokemon, err
+	}
+}
+
 // MockMySQLCreate mock
 func MockMySQLAdd(err error) MySQLAdd {
 	return func(context.Context, int, []Type) error {

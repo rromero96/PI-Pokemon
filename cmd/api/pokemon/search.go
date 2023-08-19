@@ -18,7 +18,30 @@ type (
 // MakeSearchByID creates a new SearchById function
 func MakeSearchByID(mysqlSearchByID MySQLSearchByID, searchPokemon pokemon.Search, mysqlCreate MySQLCreate) SearchByID {
 	return func(ctx context.Context, ID int) (Pokemon, error) {
-		return Pokemon{}, nil
+		pokemon, err := mysqlSearchByID(ctx, ID)
+		if err != nil {
+			log.Error(ctx, err.Error())
+			return Pokemon{}, ErrCantSearchPokemon
+		}
+
+		if pokemon.ID == 0 {
+			poke, err := searchPokemon(ctx, &ID, nil)
+			if err != nil {
+				log.Error(ctx, err.Error())
+				return Pokemon{}, ErrCantSearchPokemonApi
+			}
+
+			pokemon := toPokemon(poke)
+
+			if err = mysqlCreate(ctx, pokemon); err != nil {
+				log.Error(ctx, err.Error())
+				return Pokemon{}, ErrCantCreatePokemon
+			}
+
+			return pokemon, nil
+		}
+
+		return pokemon, nil
 	}
 }
 
