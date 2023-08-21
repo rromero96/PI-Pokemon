@@ -11,17 +11,17 @@ import (
 )
 
 type (
-	// Search retrieves a Pokemon by id or name
-	Search func(context.Context, *int, *string) (Pokemon, error)
+	// GetByID retrieves a Pokemon by id
+	GetByID func(context.Context, int) (Pokemon, error)
 
-	// SearchTypes retrieves the pokemon types
-	SearchTypes func(context.Context) (PokemonTypes, error)
+	// GetTypes retrieves the pokemon types
+	GetTypes func(context.Context) (PokemonTypes, error)
 )
 
-// MakeSearch creates a new Search function
-func MakeSearch(httpClient rusty.Requester) (Search, error) {
+// MakeGetByID creates a new GetByIDfunction
+func MakeGetByID(httpClient rusty.Requester) (GetByID, error) {
 	const domain string = "https://pokeapi.co"
-	const path string = "/api/v2/pokemon/{key}"
+	const path string = "/api/v2/pokemon/{pokemon_id}"
 
 	url := rusty.URL(domain, path)
 	endpoint, err := rusty.NewEndpoint(httpClient, url)
@@ -29,16 +29,10 @@ func MakeSearch(httpClient rusty.Requester) (Search, error) {
 		return nil, rusty.ErrCantCreateRustyEndpoint
 	}
 
-	return func(ctx context.Context, ID *int, Name *string) (Pokemon, error) {
-		var requestOpts []rusty.RequestOption
-		if ID != nil {
-			requestOpts = append(requestOpts, rusty.WithParam("key", *ID))
+	return func(ctx context.Context, ID int) (Pokemon, error) {
+		requestOpts := []rusty.RequestOption{
+			rusty.WithParam("pokemon_id", ID),
 		}
-
-		if Name != nil {
-			requestOpts = append(requestOpts, rusty.WithParam("key", *Name))
-		}
-
 		response, err := endpoint.Post(ctx, requestOpts...)
 		if response == nil && err != nil {
 			log.Error(ctx, ErrCantPerformGet.Error(), log.String("response error:", err.Error()))
@@ -52,7 +46,7 @@ func MakeSearch(httpClient rusty.Requester) (Search, error) {
 				return Pokemon{}, ErrUnmarshalResponse
 			}
 			return pokemon, nil
-		case http.StatusNotFound:
+		case http.StatusBadRequest, http.StatusNotFound:
 			return Pokemon{}, ErrPokemonNotFound
 		default:
 			log.Error(ctx, fmt.Sprintf("Error: %s - Body: %s - StatusCode: %d", err.Error(), response.Body, response.StatusCode))
@@ -61,8 +55,8 @@ func MakeSearch(httpClient rusty.Requester) (Search, error) {
 	}, nil
 }
 
-// MakeGetTypes creates a new SearchTypes function
-func MakeSearchTypes(httpClient rusty.Requester) (SearchTypes, error) {
+// MakeGetTypes creates a new GetTypes function
+func MakeGetTypes(httpClient rusty.Requester) (GetTypes, error) {
 	const domain string = "https://pokeapi.co"
 	const path string = "/api/v2/type"
 

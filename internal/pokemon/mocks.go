@@ -4,15 +4,15 @@ import (
 	"context"
 )
 
-// MockSearch mock
-func MockSearch(response Pokemon, err error) Search {
-	return func(context.Context, *int, *string) (Pokemon, error) {
+// MockGetByID mock
+func MockGetByID(response Pokemon, err error) GetByID {
+	return func(context.Context, int) (Pokemon, error) {
 		return response, err
 	}
 }
 
-// MockSearchTypes mock
-func MockSearchTypes(response PokemonTypes, err error) SearchTypes {
+// MockGetTypes mock
+func MockGetTypes(response PokemonTypes, err error) GetTypes {
 	return func(context.Context) (PokemonTypes, error) {
 		return response, err
 	}
