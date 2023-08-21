@@ -34,7 +34,7 @@ CREATE TABLE `pokemon` (
   `speed` int NOT NULL,
   `height` int NOT NULL,
   `weight` int NOT NULL,
-  `created` tinyint(1) NOT NULL DEFAULT '0',
+  `custom` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`),
   UNIQUE KEY `name_UNIQUE` (`name`)

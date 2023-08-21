@@ -15,7 +15,7 @@ type Pokemon struct {
 	Speed   int
 	Height  int
 	Weight  int
-	Created bool
+	Custom  bool
 	Types   []Type
 }
 
@@ -37,7 +37,7 @@ func (p Pokemon) toDTO() PokemonDTO {
 		Speed:   &p.Speed,
 		Height:  &p.Height,
 		Weight:  &p.Weight,
-		Created: &p.Created,
+		Custom:  &p.Custom,
 		Types:   toTypesDTO(p.Types),
 	}
 }

@@ -22,7 +22,7 @@ type (
 
 // MakeMySQLCreate creates a new MySQLCreate
 func MakeMySQLCreate(db *sql.DB, addTypes MySQLAdd) MySQLCreate {
-	var query string = "INSERT INTO pokemon (id, name, hp, attack, defense, image, speed, height, weight, created) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+	var query string = "INSERT INTO pokemon (id, name, hp, attack, defense, image, speed, height, weight, custom) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
 	return func(ctx context.Context, pokemon Pokemon) error {
 		stmt, err := db.PrepareContext(ctx, query)
 		if err != nil {
@@ -31,7 +31,7 @@ func MakeMySQLCreate(db *sql.DB, addTypes MySQLAdd) MySQLCreate {
 		}
 		defer stmt.Close()
 
-		p, err := stmt.ExecContext(ctx, pokemon.ID, pokemon.Name, pokemon.HP, pokemon.Attack, pokemon.Defense, pokemon.Image, pokemon.Speed, pokemon.Height, pokemon.Weight, pokemon.Created)
+		p, err := stmt.ExecContext(ctx, pokemon.ID, pokemon.Name, pokemon.HP, pokemon.Attack, pokemon.Defense, pokemon.Image, pokemon.Speed, pokemon.Height, pokemon.Weight, pokemon.Custom)
 		if err != nil {
 			log.Error(ctx, err.Error())
 			return ErrCantRunQuery
