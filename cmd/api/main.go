@@ -80,18 +80,13 @@ func run() error {
 	/*
 		Injections
 	*/
+
 	/*	mysql	*/
 	addTypes := pokemon.MakeMySQLAdd(pokemonsDBClient)
 	mysqlCreate := pokemon.MakeMySQLCreate(pokemonsDBClient, addTypes)
-	mysqlSearchByID, err := pokemon.MakeMySQLSearchByID(pokemonsDBClient)
-	if err != nil {
-		return err
-	}
+	mysqlSearchByID := pokemon.MakeMySQLSearchByID(pokemonsDBClient)
 	mysqlCreateTypes := pokemon.MakeMySQLCreateType(pokemonsDBClient)
-	mysqlSearchTypes, err := pokemon.MakeMySQLSearchTypes(pokemonsDBClient)
-	if err != nil {
-		return err
-	}
+	mysqlSearchTypes := pokemon.MakeMySQLSearchTypes(pokemonsDBClient)
 
 	/*	internal	*/
 	getTypes, err := internalPokemon.MakeGetTypes(httpClient)
