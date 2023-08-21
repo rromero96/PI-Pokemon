@@ -7,6 +7,8 @@ import (
 	"github.com/rromero96/roro-lib/web"
 )
 
+const ParamPokemonID string = "pokemon_id"
+
 // SearchV1 performs a search to obtain all the pokemons
 func SearchV1() web.Handler {
 	return func(w http.ResponseWriter, r *http.Request) error {
@@ -15,9 +17,24 @@ func SearchV1() web.Handler {
 }
 
 // SearchVByIDV1 performs a search to obtain a pokemon by ID
-func SearchByIDV1() web.Handler {
+func SearchByIDV1(searchByID SearchByID) web.Handler {
 	return func(w http.ResponseWriter, r *http.Request) error {
-		return nil
+		id, err := web.Params(r).Int(ParamPokemonID)
+		if err != nil {
+			return web.NewError(http.StatusBadRequest, InvalidID)
+		}
+
+		pokemon, err := searchByID(r.Context(), id)
+		if err != nil {
+			switch {
+			case errors.Is(err, ErrPokemonNotFound):
+				return web.NewError(http.StatusNotFound, NotFound)
+			default:
+				return web.NewError(http.StatusInternalServerError, CantSearchPokemon)
+			}
+		}
+
+		return web.EncodeJSON(w, pokemon.toDTO(), http.StatusOK)
 	}
 }
 

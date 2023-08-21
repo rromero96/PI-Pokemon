@@ -92,3 +92,66 @@ func TestHTTPHanldler_SearchTypesV1_failsWithInternalServerError(t *testing.T) {
 
 	assert.Equal(t, got, want)
 }
+
+func TestHTTPHandler_SearchByIDV1_success(t *testing.T) {
+	searchByID := pokemon.MockSearchByID(pokemon.MockPokemon(), nil)
+	searchByIDV1 := pokemon.SearchByIDV1(searchByID)
+
+	w := httptest.NewRecorder()
+	ctx := web.WithParams(context.Background(), web.URIParams{
+		pokemon.ParamPokemonID: "1",
+	})
+	r, _ := http.NewRequestWithContext(ctx, http.MethodGet, "/test", nil)
+
+	got := searchByIDV1(w, r)
+
+	assert.Nil(t, got)
+}
+
+func TestHTTPHandler_SearchByIDV1_failsWithBadRequest(t *testing.T) {
+	searchByID := pokemon.MockSearchByID(pokemon.MockPokemon(), nil)
+	searchByIDV1 := pokemon.SearchByIDV1(searchByID)
+
+	w := httptest.NewRecorder()
+	ctx := web.WithParams(context.Background(), web.URIParams{
+		pokemon.ParamPokemonID: "invalid",
+	})
+	r, _ := http.NewRequestWithContext(ctx, http.MethodGet, "/test", nil)
+
+	want := web.NewError(http.StatusBadRequest, pokemon.InvalidID)
+	got := searchByIDV1(w, r)
+
+	assert.Equal(t, got, want)
+}
+
+func TestHTTPHandler_SearchByIDV1_failsWithNotFound(t *testing.T) {
+	searchByID := pokemon.MockSearchByID(pokemon.Pokemon{}, pokemon.ErrPokemonNotFound)
+	searchByIDV1 := pokemon.SearchByIDV1(searchByID)
+
+	w := httptest.NewRecorder()
+	ctx := web.WithParams(context.Background(), web.URIParams{
+		pokemon.ParamPokemonID: "1",
+	})
+	r, _ := http.NewRequestWithContext(ctx, http.MethodGet, "/test", nil)
+
+	want := web.NewError(http.StatusNotFound, pokemon.NotFound)
+	got := searchByIDV1(w, r)
+
+	assert.Equal(t, got, want)
+}
+
+func TestHTTPHandler_SearchByIDV1_failsWithInternalServerError(t *testing.T) {
+	searchByID := pokemon.MockSearchByID(pokemon.Pokemon{}, pokemon.ErrCantSearchPokemon)
+	searchByIDV1 := pokemon.SearchByIDV1(searchByID)
+
+	w := httptest.NewRecorder()
+	ctx := web.WithParams(context.Background(), web.URIParams{
+		pokemon.ParamPokemonID: "1",
+	})
+	r, _ := http.NewRequestWithContext(ctx, http.MethodGet, "/test", nil)
+
+	want := web.NewError(http.StatusInternalServerError, pokemon.CantSearchPokemon)
+	got := searchByIDV1(w, r)
+
+	assert.Equal(t, got, want)
+}

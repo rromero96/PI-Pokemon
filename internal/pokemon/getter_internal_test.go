@@ -9,74 +9,74 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestMakeSearch_success(t *testing.T) {
+func TestMakeGetByID_success(t *testing.T) {
 	mockRequester := rusty.RequesterResponseMock{Body: "", Error: nil, StatusCode: http.StatusOK}
 
-	_, got := MakeSearch(mockRequester)
+	_, got := MakeGetByID(mockRequester)
 
 	assert.Nil(t, got)
 }
 
-func TestSearch_success(t *testing.T) {
+func TestGetByID_success(t *testing.T) {
 	mockRequester := rusty.RequesterResponseMock{Body: MockPokemonAsJson(), Error: nil, StatusCode: http.StatusOK}
-	search, _ := MakeSearch(mockRequester)
+	getByID, _ := MakeGetByID(mockRequester)
 	ctx := context.Background()
 	id := 1
 
 	want := MockPokemon()
-	got, err := search(ctx, &id, nil)
+	got, err := getByID(ctx, id)
 
 	assert.Nil(t, err)
 	assert.Equal(t, got, want)
 }
 
-func TestSearch_failsWithNotFound(t *testing.T) {
+func TestGetByID_failsWithNotFound(t *testing.T) {
 	mockRequester := rusty.RequesterResponseMock{Body: "", Error: nil, StatusCode: http.StatusNotFound}
-	search, _ := MakeSearch(mockRequester)
+	getByID, _ := MakeGetByID(mockRequester)
 	ctx := context.Background()
 	id := 1
 
 	want := ErrPokemonNotFound
-	_, got := search(ctx, &id, nil)
+	_, got := getByID(ctx, id)
 
 	assert.Equal(t, got, want)
 }
 
-func TestSearch_failsWithUnmarshalError(t *testing.T) {
+func TestGetByID_failsWithUnmarshalError(t *testing.T) {
 	mockRequester := rusty.RequesterResponseMock{Body: `{"error"}`, Error: nil, StatusCode: http.StatusOK}
-	search, _ := MakeSearch(mockRequester)
+	getByID, _ := MakeGetByID(mockRequester)
 	ctx := context.Background()
 	id := 1
 
 	want := ErrUnmarshalResponse
-	_, got := search(ctx, &id, nil)
+	_, got := getByID(ctx, id)
 
 	assert.Equal(t, got, want)
 }
 
-func TestSearch_failsWithInternalServerError(t *testing.T) {
+func TestGetByID_failsWithInternalServerError(t *testing.T) {
 	mockRequester := rusty.RequesterResponseMock{Body: "error", Error: nil, StatusCode: http.StatusInternalServerError}
-	search, _ := MakeSearch(mockRequester)
+	getByID, _ := MakeGetByID(mockRequester)
 	ctx := context.Background()
 	id := 1
 
 	want := ErrCantGetPokemon
-	_, got := search(ctx, &id, nil)
+	_, got := getByID(ctx, id)
 
 	assert.Equal(t, got, want)
 }
 
-func TestMakeSearchTypes_success(t *testing.T) {
+func TestMakeGetTypes_success(t *testing.T) {
 	mockRequester := rusty.RequesterResponseMock{Body: "", Error: nil, StatusCode: http.StatusOK}
 
-	_, got := MakeSearchTypes(mockRequester)
+	_, got := MakeGetTypes(mockRequester)
 
 	assert.Nil(t, got)
 }
 
-func TestSearchTypes_success(t *testing.T) {
+func TestGetTypes_success(t *testing.T) {
 	mockRequester := rusty.RequesterResponseMock{Body: MockTypesAsJson(), Error: nil, StatusCode: http.StatusOK}
-	getTypes, _ := MakeSearchTypes(mockRequester)
+	getTypes, _ := MakeGetTypes(mockRequester)
 	ctx := context.Background()
 
 	want := MockTypes()
@@ -86,9 +86,9 @@ func TestSearchTypes_success(t *testing.T) {
 	assert.Equal(t, got, want)
 }
 
-func TestSearchTypes_failsWithNotFound(t *testing.T) {
+func TestGetTypes_failsWithNotFound(t *testing.T) {
 	mockRequester := rusty.RequesterResponseMock{Body: "", Error: nil, StatusCode: http.StatusNotFound}
-	getTypes, _ := MakeSearchTypes(mockRequester)
+	getTypes, _ := MakeGetTypes(mockRequester)
 	ctx := context.Background()
 
 	want := ErrTypesNotFound
@@ -97,9 +97,9 @@ func TestSearchTypes_failsWithNotFound(t *testing.T) {
 	assert.Equal(t, got, want)
 }
 
-func TestSearchTypes_failsWithUnmarshalError(t *testing.T) {
+func TestGetTypes_failsWithUnmarshalError(t *testing.T) {
 	mockRequester := rusty.RequesterResponseMock{Body: `{"error"}`, Error: nil, StatusCode: http.StatusOK}
-	getTypes, _ := MakeSearchTypes(mockRequester)
+	getTypes, _ := MakeGetTypes(mockRequester)
 	ctx := context.Background()
 
 	want := ErrUnmarshalResponse
@@ -108,9 +108,9 @@ func TestSearchTypes_failsWithUnmarshalError(t *testing.T) {
 	assert.Equal(t, got, want)
 }
 
-func TestSearchTypes_failsWithInternalServerError(t *testing.T) {
+func TestGetTypes_failsWithInternalServerError(t *testing.T) {
 	mockRequester := rusty.RequesterResponseMock{Body: "error", Error: nil, StatusCode: http.StatusInternalServerError}
-	getTypes, _ := MakeSearchTypes(mockRequester)
+	getTypes, _ := MakeGetTypes(mockRequester)
 	ctx := context.Background()
 
 	want := ErrCantGetTypes
