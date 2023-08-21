@@ -14,7 +14,7 @@ import (
 )
 
 func TestHTTPHandler_CreateV1_success(t *testing.T) {
-	createPokemon := pokemon.MockMySQLCreate(nil)
+	createPokemon := pokemon.MockCreate(nil)
 	createV1 := pokemon.CreateV1(createPokemon)
 	bodyJSON := pokemon.MockPokemonAsJson()
 
@@ -27,7 +27,7 @@ func TestHTTPHandler_CreateV1_success(t *testing.T) {
 }
 
 func TestHTTPHandler_CreateV1_failsWhenBodyIsInvalid(t *testing.T) {
-	createPokemon := pokemon.MockMySQLCreate(nil)
+	createPokemon := pokemon.MockCreate(nil)
 	createV1 := pokemon.CreateV1(createPokemon)
 	bodyJSON := pokemon.InvalidBody
 
@@ -41,7 +41,7 @@ func TestHTTPHandler_CreateV1_failsWhenBodyIsInvalid(t *testing.T) {
 }
 
 func TestHTTPHandler_CreateV1_failsWithBadRequest(t *testing.T) {
-	createPokemon := pokemon.MockMySQLCreate(pokemon.ErrCantRunQuery)
+	createPokemon := pokemon.MockCreate(pokemon.ErrInvalidPokemon)
 	createV1 := pokemon.CreateV1(createPokemon)
 	bodyJSON := pokemon.MockPokemonAsJson()
 
@@ -55,7 +55,7 @@ func TestHTTPHandler_CreateV1_failsWithBadRequest(t *testing.T) {
 }
 
 func TestHTTPHandler_CreateV1_failsWithInternalServerError(t *testing.T) {
-	createPokemon := pokemon.MockMySQLCreate(pokemon.ErrCantPrepareStatement)
+	createPokemon := pokemon.MockCreate(pokemon.ErrCantPrepareStatement)
 	createV1 := pokemon.CreateV1(createPokemon)
 	bodyJSON := pokemon.MockPokemonAsJson()
 

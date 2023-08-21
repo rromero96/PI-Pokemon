@@ -17,6 +17,7 @@ var (
 	ErrCantCreatePokemon    = errors.New(CantCreatePokemon)
 	ErrCantSaveTypes        = errors.New("can't save types")
 	ErrPokemonNotFound      = errors.New("pokemon not found")
+	ErrInvalidPokemon       = errors.New(InvalidPokemon)
 )
 
 const (

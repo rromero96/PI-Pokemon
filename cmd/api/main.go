@@ -107,6 +107,7 @@ func run() error {
 	/*	api	*/
 	searchTypes := pokemon.MakeSearchTypes(mysqlSearchTypes, getTypes, mysqlCreateTypes)
 	searchByID := pokemon.MakeSearchByID(mysqlSearchByID, getByID, mysqlCreate)
+	create := pokemon.MakeCreate(mysqlCreate)
 
 	/*
 		Endpoints
@@ -114,7 +115,7 @@ func run() error {
 	app.Get(pokemonsSearchV1, pokemon.SearchV1())
 	app.Get(pokemonsSearchTypesV1, pokemon.SearchTypesV1(searchTypes))
 
-	app.Post(pokemonCreateV1, pokemon.CreateV1(mysqlCreate))
+	app.Post(pokemonCreateV1, pokemon.CreateV1(create))
 	app.Get(pokemonSearchByIDV1, pokemon.SearchByIDV1(searchByID))
 
 	log.Print("server up and running in port 8080")
