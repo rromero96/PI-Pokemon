@@ -70,7 +70,7 @@ func run() error {
 	/*
 	   HTTP client
 	*/
-	connectionTimeout := 250 * time.Millisecond
+	connectionTimeout := 5000 * time.Millisecond
 	retries := 1
 	opts := []httpclient.OptionRetryable{
 		httpclient.WithTimeout(connectionTimeout),
