@@ -2,9 +2,11 @@ package pokemon
 
 import (
 	"context"
+	"errors"
 
-	"github.com/rromero96/PI-Pokemon/internal/pokemon"
 	"github.com/rromero96/roro-lib/log"
+
+	internalPokemon "github.com/rromero96/PI-Pokemon/internal/pokemon"
 )
 
 type (
@@ -16,7 +18,7 @@ type (
 )
 
 // MakeSearchByID creates a new SearchById function
-func MakeSearchByID(mysqlSearchByID MySQLSearchByID, searchPokemon pokemon.Search, mysqlCreate MySQLCreate) SearchByID {
+func MakeSearchByID(mysqlSearchByID MySQLSearchByID, getByID internalPokemon.GetByID, mysqlCreate MySQLCreate) SearchByID {
 	return func(ctx context.Context, ID int) (Pokemon, error) {
 		pokemon, err := mysqlSearchByID(ctx, ID)
 		if err != nil {
@@ -25,10 +27,14 @@ func MakeSearchByID(mysqlSearchByID MySQLSearchByID, searchPokemon pokemon.Searc
 		}
 
 		if pokemon.ID == 0 {
-			poke, err := searchPokemon(ctx, &ID, nil)
+			poke, err := getByID(ctx, ID)
 			if err != nil {
 				log.Error(ctx, err.Error())
-				return Pokemon{}, ErrCantSearchPokemonApi
+				if errors.Is(err, internalPokemon.ErrPokemonNotFound) {
+					return Pokemon{}, ErrPokemonNotFound
+				}
+
+				return Pokemon{}, ErrCantGetPokemon
 			}
 
 			pokemon := toPokemon(poke)
@@ -46,7 +52,7 @@ func MakeSearchByID(mysqlSearchByID MySQLSearchByID, searchPokemon pokemon.Searc
 }
 
 // MakeSearchTypes creates a new SearchTypes function
-func MakeSearchTypes(mysqlSearchTypes MySQLSearchTypes, searchPokemonTypes pokemon.SearchTypes, mysqlCreateTypes MySQLCreateType) SearchTypes {
+func MakeSearchTypes(mysqlSearchTypes MySQLSearchTypes, getTypes internalPokemon.GetTypes, mysqlCreateTypes MySQLCreateType) SearchTypes {
 	return func(ctx context.Context) ([]Type, error) {
 		types, err := mysqlSearchTypes(ctx)
 		if err != nil {
@@ -55,10 +61,10 @@ func MakeSearchTypes(mysqlSearchTypes MySQLSearchTypes, searchPokemonTypes pokem
 		}
 
 		if len(types) == 0 {
-			pokemonTypes, err := searchPokemonTypes(ctx)
+			pokemonTypes, err := getTypes(ctx)
 			if err != nil {
 				log.Error(ctx, err.Error())
-				return []Type{}, ErrCantSearchPokemonTypes
+				return []Type{}, ErrCantGetPokemonTypes
 			}
 			types = toTypesSlice(pokemonTypes.Types)
 
