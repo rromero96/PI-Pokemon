@@ -80,18 +80,13 @@ func run() error {
 	/*
 		Injections
 	*/
+
 	/*	mysql	*/
 	addTypes := pokemon.MakeMySQLAdd(pokemonsDBClient)
 	mysqlCreate := pokemon.MakeMySQLCreate(pokemonsDBClient, addTypes)
-	mysqlSearchByID, err := pokemon.MakeMySQLSearchByID(pokemonsDBClient)
-	if err != nil {
-		return err
-	}
+	mysqlSearchByID := pokemon.MakeMySQLSearchByID(pokemonsDBClient)
 	mysqlCreateTypes := pokemon.MakeMySQLCreateType(pokemonsDBClient)
-	mysqlSearchTypes, err := pokemon.MakeMySQLSearchTypes(pokemonsDBClient)
-	if err != nil {
-		return err
-	}
+	mysqlSearchTypes := pokemon.MakeMySQLSearchTypes(pokemonsDBClient)
 
 	/*	internal	*/
 	getTypes, err := internalPokemon.MakeGetTypes(httpClient)
@@ -107,6 +102,7 @@ func run() error {
 	/*	api	*/
 	searchTypes := pokemon.MakeSearchTypes(mysqlSearchTypes, getTypes, mysqlCreateTypes)
 	searchByID := pokemon.MakeSearchByID(mysqlSearchByID, getByID, mysqlCreate)
+	create := pokemon.MakeCreate(mysqlCreate)
 
 	/*
 		Endpoints
@@ -114,7 +110,7 @@ func run() error {
 	app.Get(pokemonsSearchV1, pokemon.SearchV1())
 	app.Get(pokemonsSearchTypesV1, pokemon.SearchTypesV1(searchTypes))
 
-	app.Post(pokemonCreateV1, pokemon.CreateV1(mysqlCreate))
+	app.Post(pokemonCreateV1, pokemon.CreateV1(create))
 	app.Get(pokemonSearchByIDV1, pokemon.SearchByIDV1(searchByID))
 
 	log.Print("server up and running in port 8080")

@@ -33,7 +33,7 @@ func MakeGetByID(httpClient rusty.Requester) (GetByID, error) {
 		requestOpts := []rusty.RequestOption{
 			rusty.WithParam("pokemon_id", ID),
 		}
-		response, err := endpoint.Post(ctx, requestOpts...)
+		response, err := endpoint.Get(ctx, requestOpts...)
 		if response == nil && err != nil {
 			log.Error(ctx, ErrCantPerformGet.Error(), log.String("response error:", err.Error()))
 			return Pokemon{}, ErrCantPerformGet
@@ -67,7 +67,7 @@ func MakeGetTypes(httpClient rusty.Requester) (GetTypes, error) {
 	}
 
 	return func(ctx context.Context) (PokemonTypes, error) {
-		response, err := endpoint.Post(ctx)
+		response, err := endpoint.Get(ctx)
 		if response == nil && err != nil {
 			log.Error(ctx, ErrCantPerformGet.Error(), log.String("response error:", err.Error()))
 			return PokemonTypes{}, ErrCantPerformGet

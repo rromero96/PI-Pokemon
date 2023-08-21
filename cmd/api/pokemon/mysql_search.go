@@ -16,9 +16,9 @@ type (
 )
 
 // MakeMySQLSearchByID creates a new MySQLSearchByID function
-func MakeMySQLSearchByID(db *sql.DB) (MySQLSearchByID, error) {
+func MakeMySQLSearchByID(db *sql.DB) MySQLSearchByID {
 	return func(ctx context.Context, ID int) (Pokemon, error) {
-		const query string = `SELECT id, name, hp, attack, defense, image, speed, height, weight, created, 
+		const query string = `SELECT id, name, hp, attack, defense, image, speed, height, weight, custom, 
 		(SELECT type_name FROM pokemon_type WHERE pokemon_id = id ORDER BY type_name LIMIT 1) AS type_1,
 		(SELECT type_name FROM pokemon_type WHERE pokemon_id = id ORDER BY type_name LIMIT 1,1) AS type_2
 		FROM pokemon
@@ -41,7 +41,7 @@ func MakeMySQLSearchByID(db *sql.DB) (MySQLSearchByID, error) {
 		var pokemon Pokemon
 		for rows.Next() {
 			var type1, type2 sql.NullString
-			if err := rows.Scan(&pokemon.ID, &pokemon.Name, &pokemon.HP, &pokemon.Attack, &pokemon.Defense, &pokemon.Image, &pokemon.Speed, &pokemon.Height, &pokemon.Weight, &pokemon.Created, &type1, &type2); err != nil {
+			if err := rows.Scan(&pokemon.ID, &pokemon.Name, &pokemon.HP, &pokemon.Attack, &pokemon.Defense, &pokemon.Image, &pokemon.Speed, &pokemon.Height, &pokemon.Weight, &pokemon.Custom, &type1, &type2); err != nil {
 				log.Error(ctx, err.Error())
 				return Pokemon{}, ErrCantScanRowResult
 			}
@@ -60,11 +60,11 @@ func MakeMySQLSearchByID(db *sql.DB) (MySQLSearchByID, error) {
 		}
 
 		return pokemon, nil
-	}, nil
+	}
 }
 
 // MakeMySQLSearchTypes creates a new MySQLSearchTypes function
-func MakeMySQLSearchTypes(db *sql.DB) (MySQLSearchTypes, error) {
+func MakeMySQLSearchTypes(db *sql.DB) MySQLSearchTypes {
 	return func(ctx context.Context) ([]Type, error) {
 		const query string = "SELECT id, name FROM type ORDER BY id ASC"
 
@@ -97,5 +97,5 @@ func MakeMySQLSearchTypes(db *sql.DB) (MySQLSearchTypes, error) {
 		}
 
 		return types, nil
-	}, nil
+	}
 }

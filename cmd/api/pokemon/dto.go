@@ -13,7 +13,7 @@ type PokemonDTO struct {
 	Speed   *int      `json:"speed"`
 	Height  *int      `json:"height"`
 	Weight  *int      `json:"weight"`
-	Created *bool     `json:"created"`
+	Custom  *bool     `json:"custom"`
 	Types   []TypeDTO `json:"types"`
 }
 
@@ -61,9 +61,9 @@ func (p PokemonDTO) toDomain() Pokemon {
 		image = *p.Image
 	}
 
-	created := false
-	if p.Created != nil {
-		created = *p.Created
+	custom := false
+	if p.Custom != nil {
+		custom = *p.Custom
 	}
 
 	return Pokemon{
@@ -76,7 +76,7 @@ func (p PokemonDTO) toDomain() Pokemon {
 		Speed:   *p.Speed,
 		Height:  *p.Height,
 		Weight:  *p.Weight,
-		Created: created,
+		Custom:  custom,
 		Types:   toTypes(p.Types),
 	}
 }

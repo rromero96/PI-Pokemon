@@ -39,7 +39,7 @@ func SearchByIDV1(searchByID SearchByID) web.Handler {
 }
 
 // CreateV1 perfoms a pokemon creation
-func CreateV1(createPokemon MySQLCreate) web.Handler {
+func CreateV1(createPokemon Create) web.Handler {
 	return func(w http.ResponseWriter, r *http.Request) error {
 		var body PokemonDTO
 		if web.DecodeJSON(r, &body) != nil || body.validate() != nil {
@@ -49,7 +49,7 @@ func CreateV1(createPokemon MySQLCreate) web.Handler {
 		err := createPokemon(r.Context(), body.toDomain())
 		if err != nil {
 			switch {
-			case errors.Is(err, ErrCantRunQuery):
+			case errors.Is(err, ErrInvalidPokemon):
 				return web.NewError(http.StatusBadRequest, InvalidPokemon)
 			default:
 				return web.NewError(http.StatusInternalServerError, CantCreatePokemon)
