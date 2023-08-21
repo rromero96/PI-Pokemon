@@ -47,6 +47,13 @@ func MockSearchTypes(res []Type, err error) SearchTypes {
 	}
 }
 
+// MockSearchByID mock
+func MockSearchByID(pokemon Pokemon, err error) SearchByID {
+	return func(ctx context.Context, ID int) (Pokemon, error) {
+		return pokemon, err
+	}
+}
+
 // MockPokemonAsJson mock
 func MockPokemonAsJson() string {
 	return fmt.Sprintf(`
