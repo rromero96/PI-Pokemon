@@ -2,6 +2,7 @@ package pokemon
 
 import (
 	"context"
+	"database/sql"
 	"fmt"
 )
 
@@ -21,7 +22,7 @@ func MockMySQLSearchByID(pokemon Pokemon, err error) MySQLSearchByID {
 
 // MockMySQLCreate mock
 func MockMySQLAdd(err error) MySQLAdd {
-	return func(context.Context, int, []Type) error {
+	return func(context.Context, int, []Type, *sql.Tx) error {
 		return err
 	}
 }

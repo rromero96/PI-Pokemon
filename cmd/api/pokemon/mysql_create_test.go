@@ -30,6 +30,7 @@ func TestMakeMySQLCreate_success(t *testing.T) {
 
 func TestMySQLCreate_success(t *testing.T) {
 	db, mock, _ := sqlmock.New()
+	mock.ExpectBegin()
 	mock.ExpectPrepare(queryCreateMock)
 	mock.ExpectExec(queryCreateMock).WillReturnResult(sqlmock.NewResult(1, 2))
 	mysqlAdd := pokemon.MockMySQLAdd(nil)
@@ -44,6 +45,7 @@ func TestMySQLCreate_success(t *testing.T) {
 
 func TestMySQLCreate_failsWhenCantPrepareStatement(t *testing.T) {
 	db, mock, _ := sqlmock.New()
+	mock.ExpectBegin()
 	mock.ExpectPrepare("invalid statement")
 	mock.ExpectExec(queryCreateMock).WillReturnResult(sqlmock.NewResult(1, 2))
 	mysqlAdd := pokemon.MockMySQLAdd(nil)
@@ -59,6 +61,7 @@ func TestMySQLCreate_failsWhenCantPrepareStatement(t *testing.T) {
 
 func TestMySQLCreate_failsWhenCantRunQuery(t *testing.T) {
 	db, mock, _ := sqlmock.New()
+	mock.ExpectBegin()
 	mock.ExpectPrepare(queryCreateMock)
 	mock.ExpectExec(queryCreateMock).WillReturnError(errors.New("some error"))
 	mysqlAdd := pokemon.MockMySQLAdd(nil)
@@ -74,6 +77,7 @@ func TestMySQLCreate_failsWhenCantRunQuery(t *testing.T) {
 
 func TestMySQLCreate_failsWhenAddTypesThrowsError(t *testing.T) {
 	db, mock, _ := sqlmock.New()
+	mock.ExpectBegin()
 	mock.ExpectPrepare(queryCreateMock)
 	mock.ExpectExec(queryCreateMock).WillReturnResult(sqlmock.NewResult(1, 2))
 	mysqlAdd := pokemon.MockMySQLAdd(pokemon.ErrCantAddTypes)
@@ -99,40 +103,47 @@ func TestMakeMySQLAdd_success(t *testing.T) {
 
 func TestMySQLAdd_success(t *testing.T) {
 	db, mock, _ := sqlmock.New()
+	mock.ExpectBegin()
 	mock.ExpectPrepare(queryAddMock)
 	mock.ExpectExec(queryAddMock).WillReturnResult(sqlmock.NewResult(1, 2))
 
-	mysqlAdd := pokemon.MakeMySQLAdd(db)
 	ctx := context.Background()
+	tx, _ := db.BeginTx(ctx, nil)
+	mysqlAdd := pokemon.MakeMySQLAdd(db)
 
-	got := mysqlAdd(ctx, pokemon.MockPokemon().ID, pokemon.MockTypes())
+	got := mysqlAdd(ctx, pokemon.MockPokemon().ID, pokemon.MockTypes(), tx)
 
 	assert.Nil(t, got)
 }
 
 func TestMySQLAdd_failsWhenCantPrepareStatement(t *testing.T) {
 	db, mock, _ := sqlmock.New()
+	mock.ExpectBegin()
 	mock.ExpectPrepare("invalid statement")
 	mock.ExpectExec(queryAddMock).WillReturnResult(sqlmock.NewResult(1, 2))
 
-	mysqlAdd := pokemon.MakeMySQLAdd(db)
 	ctx := context.Background()
+	tx, _ := db.BeginTx(ctx, nil)
+	mysqlAdd := pokemon.MakeMySQLAdd(db)
+
 	want := pokemon.ErrCantPrepareStatement
-	got := mysqlAdd(ctx, pokemon.MockPokemon().ID, pokemon.MockTypes())
+	got := mysqlAdd(ctx, pokemon.MockPokemon().ID, pokemon.MockTypes(), tx)
 
 	assert.Equal(t, want, got)
 }
 
 func TestMySQLAdd_failsWhenCantRunQuery(t *testing.T) {
 	db, mock, _ := sqlmock.New()
+	mock.ExpectBegin()
 	mock.ExpectPrepare(queryAddMock)
 	mock.ExpectExec(queryAddMock).WillReturnError(errors.New("some error"))
 
-	mysqlAdd := pokemon.MakeMySQLAdd(db)
 	ctx := context.Background()
+	tx, _ := db.BeginTx(ctx, nil)
+	mysqlAdd := pokemon.MakeMySQLAdd(db)
 
 	want := pokemon.ErrCantRunQuery
-	got := mysqlAdd(ctx, pokemon.MockPokemon().ID, pokemon.MockTypes())
+	got := mysqlAdd(ctx, pokemon.MockPokemon().ID, pokemon.MockTypes(), tx)
 
 	assert.Equal(t, want, got)
 }

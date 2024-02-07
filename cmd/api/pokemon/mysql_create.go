@@ -14,7 +14,7 @@ type (
 	MySQLCreate func(ctx context.Context, pokemon Pokemon) error
 
 	// MySQLAdd serves to add a new relationships between "pokemons" and "types" schemas
-	MySQLAdd func(ctx context.Context, ID int, types []Type) error
+	MySQLAdd func(ctx context.Context, ID int, types []Type, tx *sql.Tx) error
 
 	// MySQLCreate serves to create a new row into "type" schema
 	MySQLCreateType func(ctx context.Context, types []Type) error
@@ -24,6 +24,13 @@ type (
 func MakeMySQLCreate(db *sql.DB, addTypes MySQLAdd) MySQLCreate {
 	var query string = "INSERT INTO pokemon (id, name, hp, attack, defense, image, speed, height, weight, custom) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
 	return func(ctx context.Context, pokemon Pokemon) error {
+		tx, err := db.BeginTx(ctx, nil)
+		if err != nil {
+			log.Error(ctx, err.Error())
+			return ErrCantBeginTransaction
+		}
+		defer tx.Rollback()
+
 		stmt, err := db.PrepareContext(ctx, query)
 		if err != nil {
 			log.Error(ctx, err.Error())
@@ -43,7 +50,7 @@ func MakeMySQLCreate(db *sql.DB, addTypes MySQLAdd) MySQLCreate {
 			return ErrCantGetLastID
 		}
 
-		if err := addTypes(ctx, int(id), pokemon.Types); err != nil {
+		if err := addTypes(ctx, int(id), pokemon.Types, tx); err != nil {
 			log.Error(ctx, err.Error())
 			return ErrCantAddTypes
 		}
@@ -54,7 +61,7 @@ func MakeMySQLCreate(db *sql.DB, addTypes MySQLAdd) MySQLCreate {
 
 // MakeMySQLAdd creates a new MySQLAdd
 func MakeMySQLAdd(db *sql.DB) MySQLAdd {
-	return func(ctx context.Context, ID int, types []Type) error {
+	return func(ctx context.Context, ID int, types []Type, tx *sql.Tx) error {
 		var query string = "INSERT INTO pokemon_type (pokemon_id, type_name) VALUES "
 		var inserts []string
 		var params []interface{}
@@ -67,7 +74,7 @@ func MakeMySQLAdd(db *sql.DB) MySQLAdd {
 		queryVals := strings.Join(inserts, ",")
 		query = query + queryVals
 
-		stmt, err := db.PrepareContext(ctx, query)
+		stmt, err := tx.PrepareContext(ctx, query)
 		if err != nil {
 			log.Error(ctx, err.Error())
 			return ErrCantPrepareStatement
