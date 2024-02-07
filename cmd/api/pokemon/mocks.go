@@ -41,15 +41,15 @@ func MockMySQLSearchTypes(res []Type, err error) MySQLSearchTypes {
 	}
 }
 
-// MockSearchTypes mock
-func MockSearchTypes(res []Type, err error) SearchTypes {
+// MockGetTypes mock
+func MockGetTypes(res []Type, err error) GetTypes {
 	return func(ctx context.Context) ([]Type, error) {
 		return res, err
 	}
 }
 
-// MockSearchByID mock
-func MockSearchByID(pokemon Pokemon, err error) SearchByID {
+// MockGetByID mock
+func MockGetByID(pokemon Pokemon, err error) GetByID {
 	return func(ctx context.Context, ID int) (Pokemon, error) {
 		return pokemon, err
 	}

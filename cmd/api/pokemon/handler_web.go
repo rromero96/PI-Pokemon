@@ -9,22 +9,22 @@ import (
 
 const ParamPokemonID string = "pokemon_id"
 
-// SearchV1 performs a search to obtain all the pokemons
-func SearchV1() web.Handler {
+// GetV1 performs a get to obtain all the pokemons
+func GetV1() web.Handler {
 	return func(w http.ResponseWriter, r *http.Request) error {
 		return nil
 	}
 }
 
-// SearchVByIDV1 performs a search to obtain a pokemon by ID
-func SearchByIDV1(searchByID SearchByID) web.Handler {
+// GetByIDV1 performs a get to obtain a pokemon by ID
+func GetByIDV1(getByID GetByID) web.Handler {
 	return func(w http.ResponseWriter, r *http.Request) error {
 		id, err := web.Params(r).Int(ParamPokemonID)
 		if err != nil {
 			return web.NewError(http.StatusBadRequest, InvalidID)
 		}
 
-		pokemon, err := searchByID(r.Context(), id)
+		pokemon, err := getByID(r.Context(), id)
 		if err != nil {
 			switch {
 			case errors.Is(err, ErrPokemonNotFound):
@@ -60,10 +60,10 @@ func CreateV1(createPokemon Create) web.Handler {
 	}
 }
 
-// SearchTypesV1 performs a search to obtain all pokemon types
-func SearchTypesV1(searchTypes SearchTypes) web.Handler {
+// GetTypesV1 performs a get to obtain all pokemon types
+func GetTypesV1(getTypes GetTypes) web.Handler {
 	return func(w http.ResponseWriter, r *http.Request) error {
-		types, err := searchTypes(r.Context())
+		types, err := getTypes(r.Context())
 		if err != nil {
 			return web.NewError(http.StatusInternalServerError, CantGetTypes)
 		}

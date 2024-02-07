@@ -20,10 +20,10 @@ import (
 )
 
 const (
-	pokemonsSearchV1      string = "/pokemons/v1"
-	pokemonsSearchTypesV1 string = "/pokemons/types/v1"
-	pokemonCreateV1       string = "/pokemon/v1"
-	pokemonSearchByIDV1   string = "/pokemon/id/{pokemon_id}/v1"
+	pokemonsGetV1      string = "/pokemons/v1"
+	pokemonsGetTypesV1 string = "/pokemons/types/v1"
+	pokemonCreateV1    string = "/pokemon/v1"
+	pokemonGetByIDV1   string = "/pokemon/id/{pokemon_id}/v1"
 
 	// connectionStringFormat when its deployed needs to have the host next to @tcp, check https://github.com/go-sql-driver/mysql/
 	connectionStringFormat string = "%s:%s@tcp/%s?charset=utf8&parseTime=true"
@@ -100,18 +100,18 @@ func run() error {
 	}
 
 	/*	api	*/
-	searchTypes := pokemon.MakeSearchTypes(mysqlSearchTypes, getTypes, mysqlCreateTypes)
-	searchByID := pokemon.MakeSearchByID(mysqlSearchByID, getByID, mysqlCreate)
+	searchTypes := pokemon.MakeGetTypes(mysqlSearchTypes, getTypes, mysqlCreateTypes)
+	searchByID := pokemon.MakeGetByID(mysqlSearchByID, getByID, mysqlCreate)
 	create := pokemon.MakeCreate(mysqlCreate)
 
 	/*
 		Endpoints
 	*/
-	app.Get(pokemonsSearchV1, pokemon.SearchV1())
-	app.Get(pokemonsSearchTypesV1, pokemon.SearchTypesV1(searchTypes))
+	app.Get(pokemonsGetV1, pokemon.GetV1())
+	app.Get(pokemonsGetTypesV1, pokemon.GetTypesV1(searchTypes))
 
 	app.Post(pokemonCreateV1, pokemon.CreateV1(create))
-	app.Get(pokemonSearchByIDV1, pokemon.SearchByIDV1(searchByID))
+	app.Get(pokemonGetByIDV1, pokemon.GetByIDV1(searchByID))
 
 	log.Print("server up and running in port 8080")
 	return web.Run(ln, web.DefaultTimeouts, app)

@@ -68,34 +68,34 @@ func TestHTTPHandler_CreateV1_failsWithInternalServerError(t *testing.T) {
 	assert.Equal(t, got, want)
 }
 
-func TestHTTPHanldler_SearchTypesV1_success(t *testing.T) {
-	searchTypes := pokemon.MockSearchTypes(pokemon.MockTypes(), nil)
-	searchTypesV1 := pokemon.SearchTypesV1(searchTypes)
+func TestHTTPHanldler_GetTypesV1_success(t *testing.T) {
+	getTypes := pokemon.MockGetTypes(pokemon.MockTypes(), nil)
+	getTypesV1 := pokemon.GetTypesV1(getTypes)
 
 	ctx, w := context.Background(), httptest.NewRecorder()
 	r, _ := http.NewRequestWithContext(ctx, http.MethodPost, "/test", nil)
 
-	got := searchTypesV1(w, r)
+	got := getTypesV1(w, r)
 
 	assert.Nil(t, got)
 }
 
-func TestHTTPHanldler_SearchTypesV1_failsWithInternalServerError(t *testing.T) {
-	searchTypes := pokemon.MockSearchTypes(pokemon.MockTypes(), pokemon.ErrCantSearchTypes)
-	searchTypesV1 := pokemon.SearchTypesV1(searchTypes)
+func TestHTTPHanldler_GetTypesV1_failsWithInternalServerError(t *testing.T) {
+	getTypes := pokemon.MockGetTypes(pokemon.MockTypes(), pokemon.ErrCantGetTypes)
+	getTypesV1 := pokemon.GetTypesV1(getTypes)
 
 	ctx, w := context.Background(), httptest.NewRecorder()
 	r, _ := http.NewRequestWithContext(ctx, http.MethodPost, "/test", nil)
 
 	want := web.NewError(http.StatusInternalServerError, pokemon.CantGetTypes)
-	got := searchTypesV1(w, r)
+	got := getTypesV1(w, r)
 
 	assert.Equal(t, got, want)
 }
 
-func TestHTTPHandler_SearchByIDV1_success(t *testing.T) {
-	searchByID := pokemon.MockSearchByID(pokemon.MockPokemon(), nil)
-	searchByIDV1 := pokemon.SearchByIDV1(searchByID)
+func TestHTTPHandler_GetByIDV1_success(t *testing.T) {
+	getByID := pokemon.MockGetByID(pokemon.MockPokemon(), nil)
+	getByIDV1 := pokemon.GetByIDV1(getByID)
 
 	w := httptest.NewRecorder()
 	ctx := web.WithParams(context.Background(), web.URIParams{
@@ -103,14 +103,14 @@ func TestHTTPHandler_SearchByIDV1_success(t *testing.T) {
 	})
 	r, _ := http.NewRequestWithContext(ctx, http.MethodGet, "/test", nil)
 
-	got := searchByIDV1(w, r)
+	got := getByIDV1(w, r)
 
 	assert.Nil(t, got)
 }
 
-func TestHTTPHandler_SearchByIDV1_failsWithBadRequest(t *testing.T) {
-	searchByID := pokemon.MockSearchByID(pokemon.MockPokemon(), nil)
-	searchByIDV1 := pokemon.SearchByIDV1(searchByID)
+func TestHTTPHandler_GetByIDV1_failsWithBadRequest(t *testing.T) {
+	getByID := pokemon.MockGetByID(pokemon.MockPokemon(), nil)
+	getByIDV1 := pokemon.GetByIDV1(getByID)
 
 	w := httptest.NewRecorder()
 	ctx := web.WithParams(context.Background(), web.URIParams{
@@ -119,14 +119,14 @@ func TestHTTPHandler_SearchByIDV1_failsWithBadRequest(t *testing.T) {
 	r, _ := http.NewRequestWithContext(ctx, http.MethodGet, "/test", nil)
 
 	want := web.NewError(http.StatusBadRequest, pokemon.InvalidID)
-	got := searchByIDV1(w, r)
+	got := getByIDV1(w, r)
 
 	assert.Equal(t, got, want)
 }
 
-func TestHTTPHandler_SearchByIDV1_failsWithNotFound(t *testing.T) {
-	searchByID := pokemon.MockSearchByID(pokemon.Pokemon{}, pokemon.ErrPokemonNotFound)
-	searchByIDV1 := pokemon.SearchByIDV1(searchByID)
+func TestHTTPHandler_GetByIDV1_failsWithNotFound(t *testing.T) {
+	getByID := pokemon.MockGetByID(pokemon.Pokemon{}, pokemon.ErrPokemonNotFound)
+	getByIDV1 := pokemon.GetByIDV1(getByID)
 
 	w := httptest.NewRecorder()
 	ctx := web.WithParams(context.Background(), web.URIParams{
@@ -135,14 +135,14 @@ func TestHTTPHandler_SearchByIDV1_failsWithNotFound(t *testing.T) {
 	r, _ := http.NewRequestWithContext(ctx, http.MethodGet, "/test", nil)
 
 	want := web.NewError(http.StatusNotFound, pokemon.NotFound)
-	got := searchByIDV1(w, r)
+	got := getByIDV1(w, r)
 
 	assert.Equal(t, got, want)
 }
 
-func TestHTTPHandler_SearchByIDV1_failsWithInternalServerError(t *testing.T) {
-	searchByID := pokemon.MockSearchByID(pokemon.Pokemon{}, pokemon.ErrCantSearchPokemon)
-	searchByIDV1 := pokemon.SearchByIDV1(searchByID)
+func TestHTTPHandler_GetByIDV1_failsWithInternalServerError(t *testing.T) {
+	getByID := pokemon.MockGetByID(pokemon.Pokemon{}, pokemon.ErrCantGetPokemon)
+	getByIDV1 := pokemon.GetByIDV1(getByID)
 
 	w := httptest.NewRecorder()
 	ctx := web.WithParams(context.Background(), web.URIParams{
@@ -151,7 +151,7 @@ func TestHTTPHandler_SearchByIDV1_failsWithInternalServerError(t *testing.T) {
 	r, _ := http.NewRequestWithContext(ctx, http.MethodGet, "/test", nil)
 
 	want := web.NewError(http.StatusInternalServerError, pokemon.CantSearchPokemon)
-	got := searchByIDV1(w, r)
+	got := getByIDV1(w, r)
 
 	assert.Equal(t, got, want)
 }
