@@ -42,8 +42,8 @@ func (p Pokemon) toDTO() PokemonDTO {
 	}
 }
 
-// toPokemon converts a pokemon.Pokmemon into a Pokemon
-func toPokemon(pokemon pokeapi.Pokemon) Pokemon {
+// toPokemon converts a pokeapi Pokemon into a Pokemon
+func toPokemon(pokemon pokeapi.PokemonDTO) Pokemon {
 	return Pokemon{
 		ID:      pokemon.ID,
 		Name:    pokemon.Name,
@@ -59,7 +59,7 @@ func toPokemon(pokemon pokeapi.Pokemon) Pokemon {
 }
 
 // toType converts a slice of pokemon.types to a slice of type
-func toType(pokemonTypes []pokeapi.Types) []Type {
+func toType(pokemonTypes []pokeapi.TypesDTO) []Type {
 	types := make([]Type, len(pokemonTypes))
 	for i, v := range pokemonTypes {
 		types[i] = Type{
@@ -81,7 +81,7 @@ func toTypesDTO(types []Type) []TypeDTO {
 }
 
 // toTypesSlice converts a slice of pokemon.type to a slice of type
-func toTypesSlice(pokemonTypes []pokeapi.Type) []Type {
+func toTypesSlice(pokemonTypes []pokeapi.TypeDTO) []Type {
 	types := make([]Type, len(pokemonTypes))
 	for i, v := range pokemonTypes {
 		types[i] = Type{

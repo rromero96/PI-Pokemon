@@ -23,7 +23,7 @@ func TestGetByID_success(t *testing.T) {
 	ctx := context.Background()
 	id := 1
 
-	want := MockPokemon()
+	want := MockPokemonDTO()
 	got, err := getByID(ctx, id)
 
 	assert.Nil(t, err)
@@ -79,7 +79,7 @@ func TestGetTypes_success(t *testing.T) {
 	getTypes, _ := MakeGetTypes(mockRequester)
 	ctx := context.Background()
 
-	want := MockTypes()
+	want := MockPokemonTypesDTO()
 	got, err := getTypes(ctx)
 
 	assert.Nil(t, err)

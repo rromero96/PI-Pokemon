@@ -12,10 +12,10 @@ import (
 
 type (
 	// GetByID retrieves a Pokemon by id
-	GetByID func(context.Context, int) (Pokemon, error)
+	GetByID func(context.Context, int) (PokemonDTO, error)
 
 	// GetTypes retrieves the pokemon types
-	GetTypes func(context.Context) (PokemonTypes, error)
+	GetTypes func(context.Context) (PokemonTypesDTO, error)
 )
 
 // MakeGetByID creates a new GetByIDfunction
@@ -29,28 +29,28 @@ func MakeGetByID(httpClient rusty.Requester) (GetByID, error) {
 		return nil, rusty.ErrCantCreateRustyEndpoint
 	}
 
-	return func(ctx context.Context, ID int) (Pokemon, error) {
+	return func(ctx context.Context, ID int) (PokemonDTO, error) {
 		requestOpts := []rusty.RequestOption{
 			rusty.WithParam("pokemon_id", ID),
 		}
 		response, err := endpoint.Get(ctx, requestOpts...)
 		if response == nil && err != nil {
 			log.Error(ctx, ErrCantPerformGet.Error(), log.String("response error:", err.Error()))
-			return Pokemon{}, ErrCantPerformGet
+			return PokemonDTO{}, ErrCantPerformGet
 		}
 
 		switch response.StatusCode {
 		case http.StatusOK:
-			var pokemon Pokemon
+			var pokemon PokemonDTO
 			if json.Unmarshal(response.Body, &pokemon) != nil {
-				return Pokemon{}, ErrUnmarshalResponse
+				return PokemonDTO{}, ErrUnmarshalResponse
 			}
 			return pokemon, nil
 		case http.StatusBadRequest, http.StatusNotFound:
-			return Pokemon{}, ErrPokemonNotFound
+			return PokemonDTO{}, ErrPokemonNotFound
 		default:
 			log.Error(ctx, fmt.Sprintf("Error: %s - Body: %s - StatusCode: %d", err.Error(), response.Body, response.StatusCode))
-			return Pokemon{}, ErrCantGetPokemon
+			return PokemonDTO{}, ErrCantGetPokemon
 		}
 	}, nil
 }
@@ -66,25 +66,25 @@ func MakeGetTypes(httpClient rusty.Requester) (GetTypes, error) {
 		return nil, rusty.ErrCantCreateRustyEndpoint
 	}
 
-	return func(ctx context.Context) (PokemonTypes, error) {
+	return func(ctx context.Context) (PokemonTypesDTO, error) {
 		response, err := endpoint.Get(ctx)
 		if response == nil && err != nil {
 			log.Error(ctx, ErrCantPerformGet.Error(), log.String("response error:", err.Error()))
-			return PokemonTypes{}, ErrCantPerformGet
+			return PokemonTypesDTO{}, ErrCantPerformGet
 		}
 
 		switch response.StatusCode {
 		case http.StatusOK:
-			var types PokemonTypes
+			var types PokemonTypesDTO
 			if json.Unmarshal(response.Body, &types) != nil {
-				return PokemonTypes{}, ErrUnmarshalResponse
+				return PokemonTypesDTO{}, ErrUnmarshalResponse
 			}
 			return types, nil
 		case http.StatusNotFound:
-			return PokemonTypes{}, ErrTypesNotFound
+			return PokemonTypesDTO{}, ErrTypesNotFound
 		default:
 			log.Error(ctx, fmt.Sprintf("Error: %s - Body: %s - StatusCode: %d", err.Error(), response.Body, response.StatusCode))
-			return PokemonTypes{}, ErrCantGetTypes
+			return PokemonTypesDTO{}, ErrCantGetTypes
 		}
 	}, nil
 }

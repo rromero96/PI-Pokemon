@@ -5,15 +5,15 @@ import (
 )
 
 // MockGetByID mock
-func MockGetByID(response Pokemon, err error) GetByID {
-	return func(context.Context, int) (Pokemon, error) {
+func MockGetByID(response PokemonDTO, err error) GetByID {
+	return func(context.Context, int) (PokemonDTO, error) {
 		return response, err
 	}
 }
 
 // MockGetTypes mock
-func MockGetTypes(response PokemonTypes, err error) GetTypes {
-	return func(context.Context) (PokemonTypes, error) {
+func MockGetTypes(response PokemonTypesDTO, err error) GetTypes {
+	return func(context.Context) (PokemonTypesDTO, error) {
 		return response, err
 	}
 }
@@ -87,50 +87,50 @@ func MockPokemonAsJson() string {
 	`
 }
 
-// MockPokemon mock
-func MockPokemon() Pokemon {
-	return Pokemon{
+// MockPokemonDTO mock
+func MockPokemonDTO() PokemonDTO {
+	return PokemonDTO{
 		ID:     1,
 		Name:   "bulbasaur",
 		Height: 100,
 		Weight: 100,
-		Sprites: Sprites{
-			Other: Other{
-				DreamWorld: DreamWorld{
+		Sprites: SpritesDTO{
+			Other: OtherDTO{
+				DreamWorld: DreamWorldDTO{
 					FrontDefault: "image",
 				},
 			},
 		},
-		Stats: []Stats{
+		Stats: []StatsDTO{
 			{
 				BaseStat: 100,
-				Stat:     Stat{Name: "hp"},
+				Stat:     StatDTO{Name: "hp"},
 			},
 			{
 				BaseStat: 100,
-				Stat:     Stat{Name: "attack"},
+				Stat:     StatDTO{Name: "attack"},
 			},
 			{
 				BaseStat: 100,
-				Stat:     Stat{Name: "defense"},
+				Stat:     StatDTO{Name: "defense"},
 			},
 			{
 				BaseStat: 100,
-				Stat:     Stat{Name: "special-attack"},
+				Stat:     StatDTO{Name: "special-attack"},
 			},
 			{
 				BaseStat: 100,
-				Stat:     Stat{Name: "special-defense"},
+				Stat:     StatDTO{Name: "special-defense"},
 			},
 			{
 				BaseStat: 100,
-				Stat:     Stat{Name: "speed"},
+				Stat:     StatDTO{Name: "speed"},
 			},
 		},
-		Types: []Types{{
-			Type: Type{Name: "grass"},
+		Types: []TypesDTO{{
+			Type: TypeDTO{Name: "grass"},
 		}, {
-			Type: Type{Name: "poison"},
+			Type: TypeDTO{Name: "poison"},
 		}},
 	}
 }
@@ -151,10 +151,10 @@ func MockTypesAsJson() string {
 	`
 }
 
-// MockTypes mock
-func MockTypes() PokemonTypes {
-	return PokemonTypes{
-		Types: []Type{{
+// MockPodemonTypesDTO mock
+func MockPokemonTypesDTO() PokemonTypesDTO {
+	return PokemonTypesDTO{
+		Types: []TypeDTO{{
 			Name: "grass",
 		}, {
 			Name: "poison",

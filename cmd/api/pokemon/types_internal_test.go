@@ -27,7 +27,7 @@ func TestToTypesDTO_success(t *testing.T) {
 }
 
 func TestToTypesSlice_success(t *testing.T) {
-	pokemonTypes := pokeapi.MockTypes()
+	pokemonTypes := pokeapi.MockPokemonTypesDTO()
 	types := MockTypes()
 	types[0].ID = 1
 	types[1].ID = 2
@@ -39,7 +39,7 @@ func TestToTypesSlice_success(t *testing.T) {
 }
 
 func TestToPokemon_success(t *testing.T) {
-	pokemon := pokeapi.MockPokemon()
+	pokemon := pokeapi.MockPokemonDTO()
 
 	want := MockPokemon()
 	got := toPokemon(pokemon)
@@ -48,7 +48,7 @@ func TestToPokemon_success(t *testing.T) {
 }
 
 func TestToType_success(t *testing.T) {
-	types := pokeapi.MockPokemon().Types
+	types := pokeapi.MockPokemonDTO().Types
 
 	want := MockPokemon().Types
 	got := toType(types)
