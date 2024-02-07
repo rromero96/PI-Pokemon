@@ -6,7 +6,7 @@ import (
 
 	"github.com/rromero96/roro-lib/log"
 
-	internalPokemon "github.com/rromero96/PI-Pokemon/internal/pokemon"
+	"github.com/rromero96/PI-Pokemon/internal/pokeapi"
 )
 
 type (
@@ -18,7 +18,7 @@ type (
 )
 
 // MakeSearchByID creates a new SearchById function
-func MakeSearchByID(mysqlSearchByID MySQLSearchByID, getByID internalPokemon.GetByID, mysqlCreate MySQLCreate) SearchByID {
+func MakeSearchByID(mysqlSearchByID MySQLSearchByID, getByID pokeapi.GetByID, mysqlCreate MySQLCreate) SearchByID {
 	return func(ctx context.Context, ID int) (Pokemon, error) {
 		pokemon, err := mysqlSearchByID(ctx, ID)
 		if err != nil {
@@ -30,7 +30,7 @@ func MakeSearchByID(mysqlSearchByID MySQLSearchByID, getByID internalPokemon.Get
 			poke, err := getByID(ctx, ID)
 			if err != nil {
 				log.Error(ctx, err.Error())
-				if errors.Is(err, internalPokemon.ErrPokemonNotFound) {
+				if errors.Is(err, pokeapi.ErrPokemonNotFound) {
 					return Pokemon{}, ErrPokemonNotFound
 				}
 
@@ -52,7 +52,7 @@ func MakeSearchByID(mysqlSearchByID MySQLSearchByID, getByID internalPokemon.Get
 }
 
 // MakeSearchTypes creates a new SearchTypes function
-func MakeSearchTypes(mysqlSearchTypes MySQLSearchTypes, getTypes internalPokemon.GetTypes, mysqlCreateTypes MySQLCreateType) SearchTypes {
+func MakeSearchTypes(mysqlSearchTypes MySQLSearchTypes, getTypes pokeapi.GetTypes, mysqlCreateTypes MySQLCreateType) SearchTypes {
 	return func(ctx context.Context) ([]Type, error) {
 		types, err := mysqlSearchTypes(ctx)
 		if err != nil {

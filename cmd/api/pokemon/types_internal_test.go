@@ -3,8 +3,9 @@ package pokemon
 import (
 	"testing"
 
-	"github.com/rromero96/PI-Pokemon/internal/pokemon"
 	"github.com/stretchr/testify/assert"
+
+	"github.com/rromero96/PI-Pokemon/internal/pokeapi"
 )
 
 func TestPokemon_ToDTO_success(t *testing.T) {
@@ -26,7 +27,7 @@ func TestToTypesDTO_success(t *testing.T) {
 }
 
 func TestToTypesSlice_success(t *testing.T) {
-	pokemonTypes := pokemon.MockTypes()
+	pokemonTypes := pokeapi.MockTypes()
 	types := MockTypes()
 	types[0].ID = 1
 	types[1].ID = 2
@@ -38,7 +39,7 @@ func TestToTypesSlice_success(t *testing.T) {
 }
 
 func TestToPokemon_success(t *testing.T) {
-	pokemon := pokemon.MockPokemon()
+	pokemon := pokeapi.MockPokemon()
 
 	want := MockPokemon()
 	got := toPokemon(pokemon)
@@ -47,7 +48,7 @@ func TestToPokemon_success(t *testing.T) {
 }
 
 func TestToType_success(t *testing.T) {
-	types := pokemon.MockPokemon().Types
+	types := pokeapi.MockPokemon().Types
 
 	want := MockPokemon().Types
 	got := toType(types)

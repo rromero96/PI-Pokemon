@@ -1,4 +1,4 @@
-package pokemon
+package pokeapi
 
 import (
 	"context"

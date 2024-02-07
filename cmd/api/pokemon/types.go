@@ -1,7 +1,7 @@
 package pokemon
 
 import (
-	"github.com/rromero96/PI-Pokemon/internal/pokemon"
+	"github.com/rromero96/PI-Pokemon/internal/pokeapi"
 )
 
 // Pokemon contains the pokemon data
@@ -43,7 +43,7 @@ func (p Pokemon) toDTO() PokemonDTO {
 }
 
 // toPokemon converts a pokemon.Pokmemon into a Pokemon
-func toPokemon(pokemon pokemon.Pokemon) Pokemon {
+func toPokemon(pokemon pokeapi.Pokemon) Pokemon {
 	return Pokemon{
 		ID:      pokemon.ID,
 		Name:    pokemon.Name,
@@ -59,7 +59,7 @@ func toPokemon(pokemon pokemon.Pokemon) Pokemon {
 }
 
 // toType converts a slice of pokemon.types to a slice of type
-func toType(pokemonTypes []pokemon.Types) []Type {
+func toType(pokemonTypes []pokeapi.Types) []Type {
 	types := make([]Type, len(pokemonTypes))
 	for i, v := range pokemonTypes {
 		types[i] = Type{
@@ -81,7 +81,7 @@ func toTypesDTO(types []Type) []TypeDTO {
 }
 
 // toTypesSlice converts a slice of pokemon.type to a slice of type
-func toTypesSlice(pokemonTypes []pokemon.Type) []Type {
+func toTypesSlice(pokemonTypes []pokeapi.Type) []Type {
 	types := make([]Type, len(pokemonTypes))
 	for i, v := range pokemonTypes {
 		types[i] = Type{

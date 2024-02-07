@@ -8,15 +8,15 @@ import (
 	"github.com/stretchr/testify/assert"
 
 	"github.com/rromero96/PI-Pokemon/cmd/api/pokemon"
-	internalPokemon "github.com/rromero96/PI-Pokemon/internal/pokemon"
+	"github.com/rromero96/PI-Pokemon/internal/pokeapi"
 )
 
 func TestMakeSearchTypes_success(t *testing.T) {
 	mysqlSearchTypes := pokemon.MockMySQLSearchTypes(pokemon.MockTypes(), nil)
 	mysqlCreateTypes := pokemon.MockMySQLCreateType(nil)
-	pokemonGetTypes := internalPokemon.MockGetTypes(internalPokemon.MockTypes(), nil)
+	pokeapiGetTypes := pokeapi.MockGetTypes(pokeapi.MockTypes(), nil)
 
-	got := pokemon.MakeSearchTypes(mysqlSearchTypes, pokemonGetTypes, mysqlCreateTypes)
+	got := pokemon.MakeSearchTypes(mysqlSearchTypes, pokeapiGetTypes, mysqlCreateTypes)
 
 	assert.NotNil(t, got)
 }
@@ -24,10 +24,10 @@ func TestMakeSearchTypes_success(t *testing.T) {
 func TestSearchTypes_success(t *testing.T) {
 	mysqlSearchTypes := pokemon.MockMySQLSearchTypes(pokemon.MockTypes(), nil)
 	mysqlCreateTypes := pokemon.MockMySQLCreateType(nil)
-	pokemonGetTypes := internalPokemon.MockGetTypes(internalPokemon.MockTypes(), nil)
+	pokeapiGetTypes := pokeapi.MockGetTypes(pokeapi.MockTypes(), nil)
 
 	ctx := context.Background()
-	searchTypes := pokemon.MakeSearchTypes(mysqlSearchTypes, pokemonGetTypes, mysqlCreateTypes)
+	searchTypes := pokemon.MakeSearchTypes(mysqlSearchTypes, pokeapiGetTypes, mysqlCreateTypes)
 
 	want := pokemon.MockTypes()
 	got, err := searchTypes(ctx)
@@ -40,10 +40,10 @@ func TestSearchTypes_failsWhenCantSearchTypes(t *testing.T) {
 	err := errors.New("error")
 	mysqlSearchTypes := pokemon.MockMySQLSearchTypes(nil, err)
 	mysqlCreateTypes := pokemon.MockMySQLCreateType(nil)
-	pokemonGetTypes := internalPokemon.MockGetTypes(internalPokemon.MockTypes(), nil)
+	pokeapiGetTypes := pokeapi.MockGetTypes(pokeapi.MockTypes(), nil)
 
 	ctx := context.Background()
-	searchTypes := pokemon.MakeSearchTypes(mysqlSearchTypes, pokemonGetTypes, mysqlCreateTypes)
+	searchTypes := pokemon.MakeSearchTypes(mysqlSearchTypes, pokeapiGetTypes, mysqlCreateTypes)
 
 	want := pokemon.ErrCantSearchTypes
 	_, got := searchTypes(ctx)
@@ -55,10 +55,10 @@ func TestSearchTypes_failsWhenCantGetPokemonTypes(t *testing.T) {
 	err := errors.New("error")
 	mysqlSearchTypes := pokemon.MockMySQLSearchTypes(nil, nil)
 	mysqlCreateTypes := pokemon.MockMySQLCreateType(nil)
-	pokemonGetTypes := internalPokemon.MockGetTypes(internalPokemon.PokemonTypes{}, err)
+	pokeapiGetTypes := pokeapi.MockGetTypes(pokeapi.PokemonTypes{}, err)
 
 	ctx := context.Background()
-	searchTypes := pokemon.MakeSearchTypes(mysqlSearchTypes, pokemonGetTypes, mysqlCreateTypes)
+	searchTypes := pokemon.MakeSearchTypes(mysqlSearchTypes, pokeapiGetTypes, mysqlCreateTypes)
 
 	want := pokemon.ErrCantGetPokemonTypes
 	_, got := searchTypes(ctx)
@@ -70,10 +70,10 @@ func TestSearchTypes_failsWhenCantSaveTypes(t *testing.T) {
 	err := errors.New("error")
 	mysqlSearchTypes := pokemon.MockMySQLSearchTypes(nil, nil)
 	mysqlCreateTypes := pokemon.MockMySQLCreateType(err)
-	pokemonGetTypes := internalPokemon.MockGetTypes(internalPokemon.MockTypes(), nil)
+	pokeapiGetTypes := pokeapi.MockGetTypes(pokeapi.MockTypes(), nil)
 
 	ctx := context.Background()
-	searchTypes := pokemon.MakeSearchTypes(mysqlSearchTypes, pokemonGetTypes, mysqlCreateTypes)
+	searchTypes := pokemon.MakeSearchTypes(mysqlSearchTypes, pokeapiGetTypes, mysqlCreateTypes)
 
 	want := pokemon.ErrCantSaveTypes
 	_, got := searchTypes(ctx)
@@ -84,9 +84,9 @@ func TestSearchTypes_failsWhenCantSaveTypes(t *testing.T) {
 func TestMakeSearchByID_success(t *testing.T) {
 	mysqlSearchByID := pokemon.MockMySQLSearchByID(pokemon.MockPokemon(), nil)
 	mysqlCreate := pokemon.MockMySQLCreate(nil)
-	pokemonGetByID := internalPokemon.MockGetByID(internalPokemon.Pokemon{}, nil)
+	pokeapiGetByID := pokeapi.MockGetByID(pokeapi.Pokemon{}, nil)
 
-	got := pokemon.MakeSearchByID(mysqlSearchByID, pokemonGetByID, mysqlCreate)
+	got := pokemon.MakeSearchByID(mysqlSearchByID, pokeapiGetByID, mysqlCreate)
 
 	assert.NotNil(t, got)
 }
@@ -95,10 +95,10 @@ func TestSearchByID_success(t *testing.T) {
 	ID := 1
 	mysqlSearchByID := pokemon.MockMySQLSearchByID(pokemon.MockPokemon(), nil)
 	mysqlCreate := pokemon.MockMySQLCreate(nil)
-	pokemonGetByID := internalPokemon.MockGetByID(internalPokemon.Pokemon{}, nil)
+	pokeapiGetByID := pokeapi.MockGetByID(pokeapi.Pokemon{}, nil)
 
 	ctx := context.Background()
-	searchByID := pokemon.MakeSearchByID(mysqlSearchByID, pokemonGetByID, mysqlCreate)
+	searchByID := pokemon.MakeSearchByID(mysqlSearchByID, pokeapiGetByID, mysqlCreate)
 
 	want := pokemon.MockPokemon()
 	got, err := searchByID(ctx, ID)
@@ -111,10 +111,10 @@ func TestSearchByID_successWhenPokemonIsNotInTheDatabase(t *testing.T) {
 	ID := 1
 	mysqlSearchByID := pokemon.MockMySQLSearchByID(pokemon.Pokemon{}, nil)
 	mysqlCreate := pokemon.MockMySQLCreate(nil)
-	pokemonGetByID := internalPokemon.MockGetByID(internalPokemon.MockPokemon(), nil)
+	pokeapiGetByID := pokeapi.MockGetByID(pokeapi.MockPokemon(), nil)
 
 	ctx := context.Background()
-	searchByID := pokemon.MakeSearchByID(mysqlSearchByID, pokemonGetByID, mysqlCreate)
+	searchByID := pokemon.MakeSearchByID(mysqlSearchByID, pokeapiGetByID, mysqlCreate)
 
 	want := pokemon.MockPokemon()
 	got, err := searchByID(ctx, ID)
@@ -128,10 +128,10 @@ func TestSearchByID_failsWhenCantSearchByID(t *testing.T) {
 	err := errors.New("error")
 	mysqlSearchByID := pokemon.MockMySQLSearchByID(pokemon.Pokemon{}, err)
 	mysqlCreate := pokemon.MockMySQLCreate(nil)
-	pokemonGetByID := internalPokemon.MockGetByID(internalPokemon.Pokemon{}, nil)
+	pokeapiGetByID := pokeapi.MockGetByID(pokeapi.Pokemon{}, nil)
 
 	ctx := context.Background()
-	searchByID := pokemon.MakeSearchByID(mysqlSearchByID, pokemonGetByID, mysqlCreate)
+	searchByID := pokemon.MakeSearchByID(mysqlSearchByID, pokeapiGetByID, mysqlCreate)
 
 	want := pokemon.ErrCantSearchPokemon
 	_, got := searchByID(ctx, ID)
@@ -143,10 +143,10 @@ func TestSearchByID_failsWhenGetByIDThrowsNotFound(t *testing.T) {
 	ID := 1
 	mysqlSearchByID := pokemon.MockMySQLSearchByID(pokemon.Pokemon{}, nil)
 	mysqlCreate := pokemon.MockMySQLCreate(nil)
-	pokemonGetByID := internalPokemon.MockGetByID(internalPokemon.Pokemon{}, internalPokemon.ErrPokemonNotFound)
+	pokeapiGetByID := pokeapi.MockGetByID(pokeapi.Pokemon{}, pokeapi.ErrPokemonNotFound)
 
 	ctx := context.Background()
-	searchByID := pokemon.MakeSearchByID(mysqlSearchByID, pokemonGetByID, mysqlCreate)
+	searchByID := pokemon.MakeSearchByID(mysqlSearchByID, pokeapiGetByID, mysqlCreate)
 
 	want := pokemon.ErrPokemonNotFound
 	_, got := searchByID(ctx, ID)
@@ -159,10 +159,10 @@ func TestSearchByID_failsWhenGetByIDThrowsError(t *testing.T) {
 	err := errors.New("error")
 	mysqlSearchByID := pokemon.MockMySQLSearchByID(pokemon.Pokemon{}, nil)
 	mysqlCreate := pokemon.MockMySQLCreate(nil)
-	pokemonGetByID := internalPokemon.MockGetByID(internalPokemon.Pokemon{}, err)
+	pokeapiGetByID := pokeapi.MockGetByID(pokeapi.Pokemon{}, err)
 
 	ctx := context.Background()
-	searchByID := pokemon.MakeSearchByID(mysqlSearchByID, pokemonGetByID, mysqlCreate)
+	searchByID := pokemon.MakeSearchByID(mysqlSearchByID, pokeapiGetByID, mysqlCreate)
 
 	want := pokemon.ErrCantGetPokemon
 	_, got := searchByID(ctx, ID)
@@ -175,10 +175,10 @@ func TestSearchByID_failsWhenCantSavePokemon(t *testing.T) {
 	err := errors.New("error")
 	mysqlSearchByID := pokemon.MockMySQLSearchByID(pokemon.Pokemon{}, nil)
 	mysqlCreate := pokemon.MockMySQLCreate(err)
-	pokemonGetByID := internalPokemon.MockGetByID(internalPokemon.MockPokemon(), nil)
+	pokeapiGetByID := pokeapi.MockGetByID(pokeapi.MockPokemon(), nil)
 
 	ctx := context.Background()
-	searchByID := pokemon.MakeSearchByID(mysqlSearchByID, pokemonGetByID, mysqlCreate)
+	searchByID := pokemon.MakeSearchByID(mysqlSearchByID, pokeapiGetByID, mysqlCreate)
 
 	want := pokemon.ErrCantCreatePokemon
 	_, got := searchByID(ctx, ID)

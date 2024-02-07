@@ -16,7 +16,7 @@ import (
 	"github.com/rromero96/roro-lib/web"
 
 	"github.com/rromero96/PI-Pokemon/cmd/api/pokemon"
-	internalPokemon "github.com/rromero96/PI-Pokemon/internal/pokemon"
+	"github.com/rromero96/PI-Pokemon/internal/pokeapi"
 )
 
 const (
@@ -89,12 +89,12 @@ func run() error {
 	mysqlSearchTypes := pokemon.MakeMySQLSearchTypes(pokemonsDBClient)
 
 	/*	internal	*/
-	getTypes, err := internalPokemon.MakeGetTypes(httpClient)
+	getTypes, err := pokeapi.MakeGetTypes(httpClient)
 	if err != nil {
 		return err
 	}
 
-	getByID, err := internalPokemon.MakeGetByID(httpClient)
+	getByID, err := pokeapi.MakeGetByID(httpClient)
 	if err != nil {
 		return err
 	}
