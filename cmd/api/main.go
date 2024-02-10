@@ -22,8 +22,8 @@ import (
 const (
 	pokemonsGetV1      string = "/pokemons/v1"
 	pokemonsGetTypesV1 string = "/pokemons/types/v1"
-	pokemonCreateV1    string = "/pokemon/v1"
-	pokemonGetByIDV1   string = "/pokemon/id/{pokemon_id}/v1"
+	pokemonCreateV1    string = "/pokemons/v1"
+	pokemonGetByIDV1   string = "/pokemons/id/{pokemon_id}/v1"
 
 	// connectionStringFormat when its deployed needs to have the host next to @tcp, check https://github.com/go-sql-driver/mysql/
 	connectionStringFormat string = "%s:%s@tcp/%s?charset=utf8&parseTime=true"
